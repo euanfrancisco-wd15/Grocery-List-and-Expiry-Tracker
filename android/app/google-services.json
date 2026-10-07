@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "527635349737",
+    "project_id": "grocery-list-and-expiry-track",
+    "storage_bucket": "grocery-list-and-expiry-track.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:527635349737:android:09a4273c5a8fdc33f0f078",
+        "android_client_info": {
+          "package_name": "com.school.grocerytracker.grocery_tracker"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCq-a82iR6yU_dncP-X3iBZkakGxa9Ms5k"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

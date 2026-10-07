@@ -1,0 +1,28 @@
+{
+  "flutter": {
+    "platforms": {
+      "android": {
+        "default": {
+          "projectId": "grocery-list-and-expiry-track",
+          "appId": "1:527635349737:android:09a4273c5a8fdc33f0f078",
+          "fileOutput": "android/app/google-services.json"
+        }
+      },
+      "dart": {
+        "lib/firebase_options.dart": {
+          "projectId": "grocery-list-and-expiry-track",
+          "configurations": {
+            "android": "1:527635349737:android:09a4273c5a8fdc33f0f078",
+            "ios": "1:527635349737:ios:dbb9bc5636e5de9ff0f078",
+            "macos": "1:527635349737:ios:dbb9bc5636e5de9ff0f078",
+            "web": "1:527635349737:web:5ccc19516a9d5168f0f078",
+            "windows": "1:527635349737:web:abe71c1a0d9f5ce5f0f078"
+          }
+        }
+      }
+    }
+  },
+  "firestore": {
+    "rules": "firestore.rules"
+  }
+}
