@@ -110,7 +110,7 @@
     <text x="511" y="482" class="component-title">GroceryService</text>
     <text x="491" y="503" class="component-copy">Inventory reads and writes</text>
     <text x="491" y="520" class="component-copy">Batched grocery + expense save</text>
-    <text x="491" y="540" class="component-copy">Grocery delete retains ledger</text>
+    <text x="491" y="540" class="component-copy">Grocery delete removes linked ledger</text>
 
     <rect x="738" y="457" width="251" height="105" rx="8" fill="#eef5fc" stroke="#7c9eb9" stroke-width="1.3"/>
     <path d="M957 457h32v15h-32zM957 457v15" fill="#e4eff8" stroke="#7c9eb9" stroke-width="1.2"/>
@@ -239,7 +239,7 @@
     <rect x="176" y="900" width="1396" height="112" rx="14" fill="#f7faf7" stroke="#dce8d7"/>
     <text x="197" y="927" class="section-title">PRIMARY COMPONENT INTERACTIONS</text>
     <text x="197" y="953" class="component-copy"><tspan font-weight="700">1 · Authentication:</tspan> Auth UI → AuthGate → AuthService → Firebase Auth → profile lookup.</text>
-    <text x="197" y="976" class="component-copy"><tspan font-weight="700">2 · Grocery save:</tspan> Grocery form → GroceryService → atomic inventory + purchase-ledger batch.</text>
+    <text x="197" y="976" class="component-copy"><tspan font-weight="700">2 · Grocery lifecycle:</tspan> Save writes inventory + ledger atomically; delete removes both in one batch.</text>
     <text x="197" y="999" class="component-copy"><tspan font-weight="700">3 · Reports:</tspan> Reports/Dashboard → budget service + purchaseDate expense query → totals and breakdowns.</text>
     <text x="884" y="953" class="component-copy"><tspan font-weight="700">4 · Reminders:</tspan> Notification service → Firestore history + native OS scheduler; permission/timezone apply.</text>
     <text x="884" y="976" class="component-copy"><tspan font-weight="700">5 · Photo / backup:</tspan> Photos stay local; JSON export contains Firestore data, but not photo bytes.</text>

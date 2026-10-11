@@ -29,6 +29,33 @@ class AuthService {
   Future<void> sendPasswordResetEmail(String email) =>
       _firebaseAuth.sendPasswordResetEmail(email: email.trim());
 
+  Future<void> changePassword({
+    required String currentPassword,
+    required String newPassword,
+  }) async {
+    final user = _firebaseAuth.currentUser;
+    final email = user?.email;
+    if (user == null || email == null || email.isEmpty) {
+      throw FirebaseAuthException(
+        code: 'user-not-found',
+        message: 'Sign in with an email and password account to change it.',
+      );
+    }
+    if (!user.providerData.any((provider) => provider.providerId == 'password')) {
+      throw FirebaseAuthException(
+        code: 'provider-not-enabled',
+        message: 'This account does not use an email and password sign-in.',
+      );
+    }
+
+    final credential = EmailAuthProvider.credential(
+      email: email,
+      password: currentPassword,
+    );
+    await user.reauthenticateWithCredential(credential);
+    await user.updatePassword(newPassword);
+  }
+
   Future<void> createAccountWithEmail({
     required String email,
     required String password,
@@ -172,6 +199,10 @@ class AuthService {
         'user-not-found' => 'No account was found for that email.',
         'wrong-password' ||
         'invalid-credential' => 'The email or password is incorrect.',
+        'requires-recent-login' =>
+          'For your security, sign out and sign in again before changing your password.',
+        'provider-not-enabled' =>
+          'This account uses a different sign-in method and has no password to change.',
         'email-already-in-use' =>
           'An account already exists with that email. Try logging in instead.',
         'weak-password' => 'Please use a stronger password.',

@@ -29,8 +29,8 @@ through the Firebase SDK; there is no separate application server.
    Screen-level services access records beneath the current user's UID.
 3. Saving a grocery writes the grocery document and its expense-ledger entry
    together in a Firestore batch. Updating a grocery updates both documents.
-   Deleting a grocery deletes the inventory item but intentionally retains the
-   expense history.
+   Deleting a grocery atomically deletes both the inventory item and its linked
+   purchase expense; unrelated manual expenses are retained.
 4. The app schedules expiry alerts on supported native platforms using device
    local notifications. Notification history and budget alerts are stored in
    Firestore. Web does not schedule device notifications.

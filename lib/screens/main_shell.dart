@@ -212,6 +212,157 @@ class _ProfilePreviewScreen extends StatelessWidget {
   static final _notificationService = DeviceNotificationService.instance;
   static final _backupService = BackupService();
 
+  Future<void> _changePassword(BuildContext context) async {
+    if (!user.providerData.any(
+      (provider) => provider.providerId == 'password',
+    )) {
+      await showDialog<void>(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: const Text('Password not available'),
+          content: const Text(
+            'This account uses Google sign-in. Manage its password through your Google account.',
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('OK'),
+            ),
+          ],
+        ),
+      );
+      return;
+    }
+
+    final currentPasswordController = TextEditingController();
+    final newPasswordController = TextEditingController();
+    final confirmPasswordController = TextEditingController();
+    final formKey = GlobalKey<FormState>();
+    var isSaving = false;
+    String? errorMessage;
+
+    try {
+      final changed = await showDialog<bool>(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) => StatefulBuilder(
+          builder: (context, setDialogState) => AlertDialog(
+            title: const Text('Change password'),
+            content: Form(
+              key: formKey,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  TextFormField(
+                    controller: currentPasswordController,
+                    obscureText: true,
+                    autofocus: true,
+                    decoration: const InputDecoration(
+                      labelText: 'Current password',
+                    ),
+                    validator: (value) => value == null || value.isEmpty
+                        ? 'Enter your current password.'
+                        : null,
+                  ),
+                  TextFormField(
+                    controller: newPasswordController,
+                    obscureText: true,
+                    decoration: const InputDecoration(
+                      labelText: 'New password',
+                    ),
+                    validator: (value) => value == null || value.length < 6
+                        ? 'Use at least 6 characters.'
+                        : null,
+                  ),
+                  TextFormField(
+                    controller: confirmPasswordController,
+                    obscureText: true,
+                    decoration: const InputDecoration(
+                      labelText: 'Confirm new password',
+                    ),
+                    validator: (value) => value != newPasswordController.text
+                        ? 'Passwords do not match.'
+                        : null,
+                  ),
+                  if (errorMessage != null) ...[
+                    const SizedBox(height: 12),
+                    Text(
+                      errorMessage!,
+                      style: TextStyle(
+                        color: Theme.of(context).colorScheme.error,
+                      ),
+                    ),
+                  ],
+                ],
+              ),
+            ),
+            actions: [
+              TextButton(
+                onPressed: isSaving
+                    ? null
+                    : () => Navigator.of(context).pop(false),
+                child: const Text('Cancel'),
+              ),
+              FilledButton(
+                onPressed: isSaving
+                    ? null
+                    : () async {
+                        if (!formKey.currentState!.validate()) return;
+                        setDialogState(() {
+                          isSaving = true;
+                          errorMessage = null;
+                        });
+                        try {
+                          await authService.changePassword(
+                            currentPassword: currentPasswordController.text,
+                            newPassword: newPasswordController.text,
+                          );
+                          if (context.mounted) {
+                            Navigator.of(context).pop(true);
+                          }
+                        } on FirebaseAuthException catch (error) {
+                          if (context.mounted) {
+                            setDialogState(() {
+                              isSaving = false;
+                              errorMessage = authService.friendlyAuthError(
+                                error,
+                              );
+                            });
+                          }
+                        } on Object {
+                          if (context.mounted) {
+                            setDialogState(() {
+                              isSaving = false;
+                              errorMessage =
+                                  'Could not change your password. Check your connection and try again.';
+                            });
+                          }
+                        }
+                      },
+                child: isSaving
+                    ? const SizedBox(
+                        width: 18,
+                        height: 18,
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      )
+                    : const Text('Update password'),
+              ),
+            ],
+          ),
+        ),
+      );
+      if (changed == true && context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Password changed successfully.')),
+        );
+      }
+    } finally {
+      currentPasswordController.dispose();
+      newPasswordController.dispose();
+      confirmPasswordController.dispose();
+    }
+  }
+
   Future<void> _saveSettings(Map<String, dynamic> values) async {
     await authService.updateProfile(user.uid, values);
     final groceries = await groceryService.getGroceries(user.uid);
@@ -460,37 +611,54 @@ class _ProfilePreviewScreen extends StatelessWidget {
                         ),
                         title: const Text('Account Security'),
                         subtitle: const Text(
-                          'Send a password reset link to your email',
+                          'Change the password for your email account',
                         ),
                         trailing: const Icon(Icons.chevron_right_rounded),
-                        onTap: () async {
-                          final email = user.email;
-                          if (email == null || email.isEmpty) {
-                            return;
-                          }
-                          try {
-                            await authService.sendPasswordResetEmail(email);
-                            if (context.mounted) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text(
-                                    'Password reset email sent to $email.',
+                        onTap: () => _changePassword(context),
+                      ),
+                      Align(
+                        alignment: Alignment.centerRight,
+                        child: TextButton(
+                          onPressed: () async {
+                            final email = user.email;
+                            if (email == null || email.isEmpty) return;
+                            try {
+                              await authService.sendPasswordResetEmail(email);
+                              if (context.mounted) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text(
+                                      'Password reset email sent to $email.',
+                                    ),
                                   ),
-                                ),
-                              );
-                            }
-                          } on Object catch (_) {
-                            if (context.mounted) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text(
-                                    'Could not send the reset email. Check your connection and try again.',
+                                );
+                              }
+                            } on FirebaseAuthException catch (error) {
+                              if (context.mounted) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text(
+                                      authService.friendlyAuthError(error),
+                                    ),
                                   ),
-                                ),
-                              );
+                                );
+                              }
+                            } on Object {
+                              if (context.mounted) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text(
+                                      'Could not send the reset email. Check your connection and try again.',
+                                    ),
+                                  ),
+                                );
+                              }
                             }
-                          }
-                        },
+                          },
+                          child: const Text(
+                            'Forgot password? Send reset email',
+                          ),
+                        ),
                       ),
                       ListTile(
                         contentPadding: const EdgeInsets.symmetric(
@@ -575,7 +743,7 @@ class _ProfilePreviewScreen extends StatelessWidget {
                           builder: (context) => AlertDialog(
                             title: const Text('Help & Support'),
                             content: const Text(
-                              'Your grocery records and budgets are private to your signed-in account. Manage reminder time and alert types in Notification Settings. Use Account Security to send a password reset email.',
+                              'Your grocery records and budgets are private to your signed-in account. Manage reminder time and alert types in Notification Settings. Use Account Security to change or reset your password.',
                             ),
                             actions: [
                               TextButton(

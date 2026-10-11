@@ -88,6 +88,11 @@ Email/password registration and login use Firebase Authentication. A new
 account receives a Firestore user profile. After sign-in, the app requests a
 username before opening the main screens.
 
+Email/password users can change their password under **Settings → Account
+Security** by entering their current password and a new password. If the
+current password is forgotten, use **Forgot password? Send reset email**.
+Google-only users manage their password through Google.
+
 ### Firestore
 
 1. Create a Cloud Firestore database for the selected Firebase project.

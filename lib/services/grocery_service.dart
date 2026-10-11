@@ -137,7 +137,16 @@ class GroceryService {
     final ownerUid = _authenticatedUid(userId);
     final reference = _groceriesRef(ownerUid).doc(groceryId);
     final data = (await reference.get()).data();
-    await reference.delete();
+    final linkedExpenses = await _expensesRef(
+      ownerUid,
+    ).where('groceryId', isEqualTo: groceryId).get();
+    final batch = _firestore.batch()..delete(reference);
+    final expenseIds = linkedExpenses.docs.map((expense) => expense.id).toSet()
+      ..add(groceryId);
+    for (final expenseId in expenseIds) {
+      batch.delete(_expensesRef(ownerUid).doc(expenseId));
+    }
+    await batch.commit();
     try {
       await GroceryImageService().deleteLocal(data?['imagePath'] as String?);
     } on Object {
