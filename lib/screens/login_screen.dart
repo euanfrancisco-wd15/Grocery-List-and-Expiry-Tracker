@@ -3,12 +3,21 @@ import 'package:flutter/material.dart';
 import '../services/auth_service.dart';
 import '../theme/app_colors.dart';
 import '../widgets/custom_text_field.dart';
+import '../widgets/playful_entrance.dart';
 
 class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key, required this.authService, this.initialError});
+  const LoginScreen({
+    super.key,
+    required this.authService,
+    this.initialError,
+    this.initialSignUp = false,
+    this.onBack,
+  });
 
   final AuthService authService;
   final String? initialError;
+  final bool initialSignUp;
+  final VoidCallback? onBack;
 
   @override
   State<LoginScreen> createState() => _LoginScreenState();
@@ -30,6 +39,7 @@ class _LoginScreenState extends State<LoginScreen> {
   void initState() {
     super.initState();
     _errorMessage = widget.initialError;
+    _isSignUp = widget.initialSignUp;
   }
 
   @override
@@ -79,6 +89,55 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
+  Future<void> _googleSignIn() async {
+    setState(() {
+      _isLoading = true;
+      _errorMessage = null;
+    });
+    try {
+      await widget.authService.signInWithGoogle();
+    } on Object catch (error) {
+      if (!mounted) return;
+      setState(() {
+        _errorMessage = widget.authService.friendlyAuthError(error);
+      });
+    } finally {
+      if (mounted) setState(() => _isLoading = false);
+    }
+  }
+
+  Future<void> _forgotPassword() async {
+    final email = _emailController.text.trim();
+    if (email.isEmpty || !email.contains('@')) {
+      setState(
+        () =>
+            _errorMessage = 'Enter your email above, then tap Forgot Password?',
+      );
+      return;
+    }
+    setState(() {
+      _isLoading = true;
+      _errorMessage = null;
+    });
+    try {
+      await widget.authService.sendPasswordResetEmail(email);
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Password reset email sent. Please check your inbox.'),
+        ),
+      );
+    } on Object catch (error) {
+      if (mounted) {
+        setState(
+          () => _errorMessage = widget.authService.friendlyAuthError(error),
+        );
+      }
+    } finally {
+      if (mounted) setState(() => _isLoading = false);
+    }
+  }
+
   void _toggleMode(bool signUp) {
     setState(() {
       _isSignUp = signUp;
@@ -116,13 +175,55 @@ class _LoginScreenState extends State<LoginScreen> {
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          const _LoginHeader(),
+                          if (widget.onBack != null)
+                            Align(
+                              alignment: Alignment.centerLeft,
+                              child: IconButton(
+                                tooltip: 'Back',
+                                onPressed: widget.onBack,
+                                icon: const Icon(Icons.arrow_back_rounded),
+                              ),
+                            ),
+                          _LoginHeader(isSignUp: _isSignUp),
                           const SizedBox(height: 24),
                           _AuthToggle(
                             isSignUp: _isSignUp,
                             onChanged: _toggleMode,
                           ),
                           const SizedBox(height: 22),
+                          if (!_isSignUp) ...[
+                            OutlinedButton.icon(
+                              onPressed: _isLoading ? null : _googleSignIn,
+                              icon: _isLoading
+                                  ? const SizedBox.square(
+                                      dimension: 20,
+                                      child: CircularProgressIndicator(
+                                        strokeWidth: 2,
+                                      ),
+                                    )
+                                  : const Icon(Icons.g_mobiledata_rounded),
+                              label: Text(
+                                _isLoading
+                                    ? 'Connecting to Google...'
+                                    : 'Continue with Google',
+                              ),
+                              style: OutlinedButton.styleFrom(
+                                minimumSize: const Size.fromHeight(52),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(18),
+                                ),
+                              ),
+                            ),
+                            const Padding(
+                              padding: EdgeInsets.symmetric(vertical: 14),
+                              child: Text(
+                                'or',
+                                style: TextStyle(
+                                  color: AppColors.textSecondary,
+                                ),
+                              ),
+                            ),
+                          ],
                           CustomTextField(
                             controller: _emailController,
                             label: 'Email',
@@ -130,6 +231,14 @@ class _LoginScreenState extends State<LoginScreen> {
                             prefixIcon: Icons.email_outlined,
                             validator: _validateEmail,
                           ),
+                          if (!_isSignUp)
+                            Align(
+                              alignment: Alignment.centerRight,
+                              child: TextButton(
+                                onPressed: _isLoading ? null : _forgotPassword,
+                                child: const Text('Forgot Password?'),
+                              ),
+                            ),
                           const SizedBox(height: 14),
                           CustomTextField(
                             controller: _passwordController,
@@ -190,18 +299,17 @@ class _LoginScreenState extends State<LoginScreen> {
                                       color: Colors.white,
                                     ),
                                   )
-                                : Text(_isSignUp ? 'Create Account' : 'Login'),
+                                : Text(_isSignUp ? 'Create Account' : 'Log In'),
                           ),
-                          const SizedBox(height: 14),
-                          OutlinedButton.icon(
-                            onPressed: null,
-                            icon: const Icon(Icons.g_mobiledata_rounded),
-                            label: const Text('Continue with Google'),
-                            style: OutlinedButton.styleFrom(
-                              minimumSize: const Size.fromHeight(52),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(18),
-                              ),
+                          const SizedBox(height: 10),
+                          TextButton(
+                            onPressed: _isLoading
+                                ? null
+                                : () => _toggleMode(!_isSignUp),
+                            child: Text(
+                              _isSignUp
+                                  ? 'Already have an account? Log In'
+                                  : "Don't have an account? Sign Up",
                             ),
                           ),
                         ],
@@ -251,38 +359,40 @@ class _LoginScreenState extends State<LoginScreen> {
 }
 
 class _LoginHeader extends StatelessWidget {
-  const _LoginHeader();
+  const _LoginHeader({required this.isSignUp});
+  final bool isSignUp;
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Container(
-          width: 88,
-          height: 88,
-          decoration: const BoxDecoration(
-            color: AppColors.lightGreenBackground,
-            shape: BoxShape.circle,
-          ),
-          child: const Icon(
-            Icons.shopping_cart_rounded,
-            color: AppColors.primaryGreen,
-            size: 48,
+        MascotFloat(
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(18),
+            child: Image.asset(
+              'assets/images/gropanda_logo.png',
+              width: 88,
+              height: 88,
+              fit: BoxFit.cover,
+              semanticLabel: 'GroPanda panda grocery logo',
+            ),
           ),
         ),
         const SizedBox(height: 18),
-        const Text(
-          'Grocery Tracker',
+        Text(
+          isSignUp ? 'Create Your Account' : 'Welcome Back!',
           textAlign: TextAlign.center,
           style: TextStyle(
             color: AppColors.darkGreen,
-            fontSize: 30,
+            fontSize: 26,
             fontWeight: FontWeight.w800,
           ),
         ),
         const SizedBox(height: 6),
-        const Text(
-          'Welcome back, shopper!',
+        Text(
+          isSignUp
+              ? 'Start keeping track of your groceries today!'
+              : 'Log in to continue',
           textAlign: TextAlign.center,
           style: TextStyle(
             color: AppColors.textSecondary,

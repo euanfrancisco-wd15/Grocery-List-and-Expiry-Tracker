@@ -12,7 +12,20 @@
           "package_name": "com.school.grocerytracker.grocery_tracker"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "527635349737-ivk237e042065r430ri5nors1c4tav3t.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.school.grocerytracker.grocery_tracker",
+            "certificate_hash": "d8064b0593095f6ad824df78f0fa8c2403787055"
+          }
+        },
+        {
+          "client_id": "527635349737-n0m81f114cqjj6lfc7iidkcevencfub3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyCq-a82iR6yU_dncP-X3iBZkakGxa9Ms5k"
@@ -20,7 +33,19 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "527635349737-n0m81f114cqjj6lfc7iidkcevencfub3.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "527635349737-3g8m9flfd3bge0r7k8jdjp2ht6avva25.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.school.grocerytracker.groceryTracker"
+              }
+            }
+          ]
         }
       }
     }

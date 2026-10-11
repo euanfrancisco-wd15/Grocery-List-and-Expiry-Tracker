@@ -2,10 +2,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import '../models/grocery.dart';
-import '../models/grocery_options.dart';
 import '../services/grocery_service.dart';
 import '../theme/app_colors.dart';
 import '../widgets/grocery_card.dart';
+import '../widgets/section_header.dart';
 
 enum InventoryStatusFilter { all, expiringSoon, expired }
 
@@ -16,24 +16,27 @@ class InventoryScreen extends StatefulWidget {
     required this.groceryService,
     required this.onAddGrocery,
     required this.onOpenGrocery,
+    this.initialStatus = InventoryStatusFilter.all,
   });
 
   final User user;
   final GroceryService groceryService;
   final VoidCallback onAddGrocery;
   final ValueChanged<Grocery> onOpenGrocery;
+  final InventoryStatusFilter initialStatus;
 
   @override
   State<InventoryScreen> createState() => _InventoryScreenState();
 }
 
 class _InventoryScreenState extends State<InventoryScreen> {
-  static const _categories = ['All Categories', ...GroceryOptions.categories];
+  static const _categoryFilters = ['All', 'Produce', 'Dairy', 'Meat', 'Pantry'];
 
   final _searchController = TextEditingController();
-  InventoryStatusFilter _statusFilter = InventoryStatusFilter.all;
-  String _selectedCategory = _categories.first;
+  late InventoryStatusFilter _statusFilter = widget.initialStatus;
+  String _selectedCategory = _categoryFilters.first;
   String _searchQuery = '';
+  int _expiryWindow = 7;
 
   @override
   void dispose() {
@@ -54,14 +57,12 @@ class _InventoryScreenState extends State<InventoryScreen> {
           return ListView(
             padding: const EdgeInsets.fromLTRB(24, 20, 24, 28),
             children: [
-              Text(
-                'My Inventory',
-                style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                  fontWeight: FontWeight.w900,
-                  color: AppColors.textPrimary,
-                ),
+              SectionHeader(
+                title: _screenTitle,
+                subtitle: 'Find and manage the food you have at home.',
+                icon: Icons.inventory_2_rounded,
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: 18),
               TextField(
                 controller: _searchController,
                 onChanged: (value) {
@@ -95,29 +96,35 @@ class _InventoryScreenState extends State<InventoryScreen> {
                   });
                 },
               ),
-              const SizedBox(height: 12),
-              DropdownButtonFormField<String>(
-                initialValue: _selectedCategory,
-                decoration: const InputDecoration(
-                  prefixIcon: Icon(Icons.category_outlined),
-                  labelText: 'Category',
-                ),
-                items: _categories
-                    .map(
-                      (category) => DropdownMenuItem(
-                        value: category,
-                        child: Text(category),
+              if (_statusFilter == InventoryStatusFilter.expiringSoon) ...[
+                const SizedBox(height: 8),
+                Wrap(
+                  spacing: 8,
+                  children: [
+                    for (final days in [7, 3, 1])
+                      ChoiceChip(
+                        label: Text(days == 1 ? 'Tomorrow' : '$days Days'),
+                        selected: _expiryWindow == days,
+                        onSelected: (_) => setState(() => _expiryWindow = days),
                       ),
-                    )
-                    .toList(),
-                onChanged: (value) {
-                  if (value == null) {
-                    return;
-                  }
-                  setState(() {
-                    _selectedCategory = value;
-                  });
-                },
+                  ],
+                ),
+              ],
+              const SizedBox(height: 12),
+              const SizedBox(height: 5),
+              const Text(
+                'Browse by category',
+                style: TextStyle(
+                  color: AppColors.textSecondary,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+              const SizedBox(height: 9),
+              _CategoryFilterChips(
+                selected: _selectedCategory,
+                categories: _categoryFilters,
+                onChanged: (category) =>
+                    setState(() => _selectedCategory = category),
               ),
               const SizedBox(height: 22),
               if (isLoading)
@@ -157,6 +164,12 @@ class _InventoryScreenState extends State<InventoryScreen> {
     );
   }
 
+  String get _screenTitle => switch (widget.initialStatus) {
+    InventoryStatusFilter.all => 'My Inventory',
+    InventoryStatusFilter.expiringSoon => 'Expiring Soon',
+    InventoryStatusFilter.expired => 'Expired Items',
+  };
+
   List<Grocery> _applyFilters(List<Grocery> groceries) {
     return groceries.where((grocery) {
       final matchesSearch =
@@ -165,17 +178,92 @@ class _InventoryScreenState extends State<InventoryScreen> {
 
       final matchesStatus = switch (_statusFilter) {
         InventoryStatusFilter.all => true,
-        InventoryStatusFilter.expiringSoon => grocery.isExpiringSoon,
+        InventoryStatusFilter.expiringSoon =>
+          grocery.daysRemaining >= 0 &&
+              (_expiryWindow == 1
+                  ? grocery.daysRemaining == 1
+                  : grocery.daysRemaining <= _expiryWindow),
         InventoryStatusFilter.expired => grocery.isExpired,
       };
 
-      final matchesCategory =
-          _selectedCategory == _categories.first ||
-          grocery.category == _selectedCategory;
+      final category = grocery.category.toLowerCase();
+      final matchesCategory = switch (_selectedCategory) {
+        'All' => true,
+        'Produce' => {'produce', 'fruits', 'vegetables'}.contains(category),
+        'Dairy' => category == 'dairy',
+        'Meat' => {'meat', 'seafood'}.contains(category),
+        'Pantry' => !{
+          'produce',
+          'fruits',
+          'vegetables',
+          'dairy',
+          'meat',
+          'seafood',
+        }.contains(category),
+        _ => true,
+      };
 
       return matchesSearch && matchesStatus && matchesCategory;
     }).toList();
   }
+}
+
+class _CategoryFilterChips extends StatelessWidget {
+  const _CategoryFilterChips({
+    required this.selected,
+    required this.categories,
+    required this.onChanged,
+  });
+
+  final String selected;
+  final List<String> categories;
+  final ValueChanged<String> onChanged;
+
+  static const _icons = {
+    'All': Icons.grid_view_rounded,
+    'Produce': Icons.eco_rounded,
+    'Dairy': Icons.water_drop_rounded,
+    'Meat': Icons.set_meal_rounded,
+    'Pantry': Icons.kitchen_rounded,
+  };
+
+  @override
+  Widget build(BuildContext context) => SingleChildScrollView(
+    scrollDirection: Axis.horizontal,
+    child: Row(
+      children: [
+        for (final category in categories) ...[
+          ChoiceChip(
+            avatar: Icon(
+              _icons[category],
+              size: 17,
+              color: selected == category
+                  ? AppColors.darkGreen
+                  : AppColors.textSecondary,
+            ),
+            label: Text(category),
+            selected: selected == category,
+            onSelected: (_) => onChanged(category),
+            selectedColor: AppColors.primaryGreen,
+            backgroundColor: Colors.white,
+            showCheckmark: false,
+            labelStyle: TextStyle(
+              color: selected == category
+                  ? AppColors.darkGreen
+                  : AppColors.textPrimary,
+              fontWeight: FontWeight.w700,
+            ),
+            side: BorderSide(
+              color: selected == category
+                  ? AppColors.primaryGreen
+                  : AppColors.borderGreen,
+            ),
+          ),
+          if (category != categories.last) const SizedBox(width: 8),
+        ],
+      ],
+    ),
+  );
 }
 
 class _StatusFilterChips extends StatelessWidget {
@@ -191,7 +279,7 @@ class _StatusFilterChips extends StatelessWidget {
       child: Row(
         children: [
           _FilterChip(
-            label: 'All',
+            label: 'Any Status',
             isSelected: selected == InventoryStatusFilter.all,
             onTap: () => onChanged(InventoryStatusFilter.all),
           ),
@@ -259,18 +347,24 @@ class _InventoryEmptyState extends StatelessWidget {
         child: Column(
           children: [
             Container(
-              width: 76,
-              height: 76,
-              decoration: const BoxDecoration(
+              width: 94,
+              height: 94,
+              decoration: BoxDecoration(
                 color: AppColors.lightGreenBackground,
-                shape: BoxShape.circle,
+                borderRadius: BorderRadius.circular(28),
               ),
-              child: const Icon(
-                Icons.add_shopping_cart_rounded,
-                color: AppColors.primaryGreen,
-                size: 40,
+              padding: const EdgeInsets.all(5),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(24),
+                child: Image.asset(
+                  'assets/images/gropanda_logo.png',
+                  fit: BoxFit.cover,
+                  semanticLabel: 'GroPanda mascot ready to help with groceries',
+                ),
               ),
             ),
+            const SizedBox(height: 8),
+            const Text('🍎   🥕   🥦', style: TextStyle(fontSize: 22)),
             const SizedBox(height: 16),
             Text(
               'Your inventory is empty.',

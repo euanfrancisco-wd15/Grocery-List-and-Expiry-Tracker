@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 390 844" role="img" aria-labelledby="title desc">
+  <title id="title">GroPanda dashboard screen</title>
+  <desc id="desc">Dashboard matching the mobile layout: greeting and notification banner, full-width add action, secondary action chips, vertically stacked summary cards, monthly budget, and expiring items.</desc>
+  <defs><style>text{font-family:Roboto,Arial,sans-serif}.muted{fill:#788078}</style><linearGradient id="brand" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#a8e6a1"/><stop offset="1" stop-color="#285b43"/></linearGradient></defs>
+  <rect width="390" height="844" fill="#f7faec"/>
+  <text x="18" y="26" font-size="12" fill="#303a32">9:41</text><text x="316" y="26" font-size="12" fill="#303a32">●  Wi-Fi  ▰</text>
+  <rect x="16" y="40" width="358" height="62" rx="22" fill="url(#brand)"/>
+  <circle cx="49" cy="71" r="20" fill="#ffe08a"/><text x="49" y="77" text-anchor="middle" font-size="15" font-weight="700" fill="#285b43">U</text>
+  <text x="79" y="67" font-size="17" font-weight="900" fill="#fff">Hello, username!</text><text x="79" y="88" font-size="12" fill="#fff">Good food, better days!</text>
+  <circle cx="344" cy="71" r="19" fill="#ffe08a"/><text x="344" y="77" text-anchor="middle" font-size="19" fill="#285b43">♧</text><circle cx="358" cy="57" r="8" fill="#ff6b6b"/><text x="358" y="60" text-anchor="middle" font-size="9" fill="#fff">2</text>
+  <rect x="16" y="119" width="358" height="58" rx="20" fill="#285b43"/><text x="195" y="155" text-anchor="middle" font-size="16" font-weight="800" fill="#fff">＋  Add Grocery</text>
+  <rect x="66" y="187" width="107" height="36" rx="18" fill="#fff" stroke="#dce8d7"/><text x="119" y="210" text-anchor="middle" font-size="13" fill="#303a32">▤ Inventory</text>
+  <rect x="181" y="187" width="91" height="36" rx="18" fill="#fff" stroke="#dce8d7"/><text x="226" y="210" text-anchor="middle" font-size="13" fill="#303a32">▥ Reports</text>
+  <rect x="280" y="187" width="94" height="36" rx="18" fill="#fff" stroke="#dce8d7"/><text x="327" y="210" text-anchor="middle" font-size="13" fill="#303a32">⚙ Settings</text>
+  <rect x="16" y="235" width="358" height="70" rx="20" fill="#fff" stroke="#dce8d7"/>
+  <rect x="29" y="247" width="46" height="46" rx="15" fill="#a8e6a1" fill-opacity=".25"/><text x="52" y="277" text-anchor="middle" font-size="23" fill="#285b43">▤</text>
+  <text x="88" y="263" font-size="13" font-weight="600" class="muted">Total Items</text><text x="88" y="289" font-size="23" font-weight="900" fill="#303a32">12</text>
+  <rect x="16" y="313" width="358" height="70" rx="20" fill="#fff" stroke="#dce8d7"/>
+  <rect x="29" y="325" width="46" height="46" rx="15" fill="#ffe08a" fill-opacity=".3"/><text x="52" y="355" text-anchor="middle" font-size="23" fill="#f59e0b">◷</text>
+  <text x="88" y="341" font-size="13" font-weight="600" class="muted">Expiring Soon</text><text x="88" y="367" font-size="23" font-weight="900" fill="#303a32">3</text>
+  <rect x="16" y="391" width="358" height="70" rx="20" fill="#fff" stroke="#dce8d7"/>
+  <rect x="29" y="403" width="46" height="46" rx="15" fill="#ff6b6b" fill-opacity=".15"/><text x="52" y="433" text-anchor="middle" font-size="23" fill="#ef4444">!</text>
+  <text x="88" y="419" font-size="13" font-weight="600" class="muted">Expired</text><text x="88" y="445" font-size="23" font-weight="900" fill="#303a32">1</text>
+  <rect x="16" y="475" width="358" height="148" rx="24" fill="#fff" stroke="#dce8d7"/>
+  <text x="34" y="507" font-size="17" font-weight="800" fill="#303a32">Monthly Budget</text><text x="355" y="507" text-anchor="end" font-size="13" fill="#285b43">✎ Edit</text>
+  <text x="34" y="536" font-size="12" fill="#303a32">Budget ₱12,000  ·  Spent ₱4,250  ·  Remaining ₱7,750</text>
+  <rect x="34" y="550" width="322" height="8" rx="4" fill="#e8efe5"/><rect x="34" y="550" width="114" height="8" rx="4" fill="#a8e6a1"/>
+  <text x="34" y="582" font-size="12" font-weight="700" fill="#285b43">35% used this month</text>
+  <text x="16" y="657" font-size="20" font-weight="900" fill="#303a32">Expiring Soon</text><text x="370" y="657" text-anchor="end" font-size="13" fill="#285b43">View inventory →</text>
+  <rect x="0" y="752" width="390" height="70" fill="#fff" stroke="#dce8d7"/>
+  <g font-family="Roboto,Arial,sans-serif" text-anchor="middle" font-size="10"><text x="39" y="781" fill="#285b43">▦</text><text x="39" y="802" fill="#285b43" font-weight="700">Dashboard</text><text x="117" y="781" fill="#788078">▤</text><text x="117" y="802" fill="#788078">Inventory</text><text x="195" y="781" fill="#788078">＋</text><text x="195" y="802" fill="#788078">Add</text><text x="273" y="781" fill="#788078">▥</text><text x="273" y="802" fill="#788078">Reports</text><text x="351" y="781" fill="#788078">○</text><text x="351" y="802" fill="#788078">Settings</text></g>
+  <rect x="150" y="832" width="90" height="5" rx="3" fill="#dce8d7"/>
+</svg>

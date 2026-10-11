@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 390 844" role="img" aria-labelledby="title desc">
+  <title id="title">GroPanda login screen</title>
+  <desc id="desc">Login mode of the current authentication card, including logo, login and sign-up toggle, Google sign-in, email and password fields, and password reset.</desc>
+  <defs><style>text{font-family:Roboto,Arial,sans-serif}.muted{fill:#788078}</style></defs>
+  <defs><linearGradient id="bg" x2="0" y2="1"><stop stop-color="#f7faec"/><stop offset="1" stop-color="#fffdf5"/></linearGradient></defs>
+  <rect width="390" height="844" fill="url(#bg)"/>
+  <text x="22" y="29" font-size="12" fill="#303a32">9:41</text><text x="315" y="29" font-size="12" fill="#303a32">●  Wi-Fi  ▰</text>
+  <rect x="20" y="48" width="350" height="755" rx="24" fill="#fff" stroke="#dce8d7"/>
+  <image href="../../assets/images/gropanda_logo.png" x="151" y="76" width="88" height="88"/>
+  <text x="195" y="192" text-anchor="middle" font-size="26" font-weight="800" fill="#285b43">Welcome Back!</text>
+  <text x="195" y="216" text-anchor="middle" font-size="14" class="muted">Log in to continue</text>
+  <rect x="43" y="235" width="304" height="45" rx="16" fill="#f5f5f0"/>
+  <rect x="46" y="238" width="149" height="39" rx="13" fill="#a8e6a1"/>
+  <text x="120" y="263" text-anchor="middle" font-size="14" font-weight="700" fill="#285b43">Login</text>
+  <text x="269" y="263" text-anchor="middle" font-size="14" fill="#788078">Sign Up</text>
+  <rect x="43" y="298" width="304" height="52" rx="18" fill="#fff" stroke="#dce8d7"/>
+  <text x="195" y="330" text-anchor="middle" font-size="14" font-weight="600" fill="#303a32">Continue with Google</text>
+  <text x="195" y="378" text-anchor="middle" font-size="14" class="muted">or</text>
+  <text x="49" y="411" font-size="13" font-weight="600" fill="#303a32">Email</text>
+  <rect x="43" y="420" width="304" height="52" rx="16" fill="#f5f5f0"/>
+  <text x="59" y="451" font-size="14" class="muted">✉  Email</text>
+  <text x="49" y="504" font-size="13" font-weight="600" fill="#303a32">Password</text>
+  <rect x="43" y="513" width="304" height="52" rx="16" fill="#f5f5f0"/>
+  <text x="59" y="544" font-size="14" class="muted">▣  ••••••••</text><text x="319" y="544" font-size="14" class="muted">◉</text>
+  <text x="341" y="587" text-anchor="end" font-size="13" fill="#285b43">Forgot Password?</text>
+  <rect x="43" y="610" width="304" height="54" rx="18" fill="#a8e6a1"/>
+  <text x="195" y="644" text-anchor="middle" font-size="16" font-weight="700" fill="#285b43">Log In</text>
+  <text x="195" y="702" text-anchor="middle" font-size="13" class="muted">Don't have an account? Sign Up</text>
+  <rect x="150" y="824" width="90" height="5" rx="3" fill="#dce8d7"/>
+</svg>

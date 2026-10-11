@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 390 844" role="img" aria-labelledby="title desc">
+  <title id="title">GroPanda welcome screen</title>
+  <desc id="desc">Current welcome screen with the app logo, tagline, Get Started, and Log In actions.</desc>
+  <defs><style>text{font-family:Roboto,Arial,sans-serif}.muted{fill:#788078}</style></defs>
+  <rect width="390" height="844" fill="#f7faec"/>
+  <text x="22" y="29" font-size="12" fill="#303a32">9:41</text><text x="315" y="29" font-size="12" fill="#303a32">●  Wi-Fi  ▰</text>
+  <image href="../../assets/images/gropanda_logo.png" x="90" y="128" width="210" height="210" preserveAspectRatio="xMidYMid meet"/>
+  <text x="195" y="402" text-anchor="middle" font-size="32" font-weight="900" fill="#285b43">GroPanda</text>
+  <text x="195" y="438" text-anchor="middle" font-size="16" class="muted">Keep track. Eat fresh. Save more.</text>
+  <rect x="28" y="496" width="334" height="54" rx="18" fill="#a8e6a1"/>
+  <text x="195" y="530" text-anchor="middle" font-size="16" font-weight="700" fill="#285b43">Get Started</text>
+  <text x="195" y="594" text-anchor="middle" font-size="14" class="muted">Already have an account? Log In</text>
+  <rect x="150" y="824" width="90" height="5" rx="3" fill="#dce8d7"/>
+</svg>

@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 390 844" role="img" aria-labelledby="title desc">
+  <title id="title">GroPanda add grocery screen</title>
+  <desc id="desc">Current add form with section header, photo card, item name and category fields, then quantity and unit fields. The form continues below the visible scroll area.</desc>
+  <defs><style>text{font-family:Roboto,Arial,sans-serif}.muted{fill:#788078}</style><linearGradient id="brand" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#a8e6a1"/><stop offset="1" stop-color="#285b43"/></linearGradient></defs>
+  <rect width="390" height="844" fill="#f7faec"/>
+  <text x="18" y="26" font-size="12" fill="#303a32">9:41</text><text x="316" y="26" font-size="12" fill="#303a32">●  Wi-Fi  ▰</text>
+  <rect x="16" y="42" width="358" height="96" rx="26" fill="url(#brand)"/><circle cx="369" cy="34" r="54" fill="#fff" fill-opacity=".12"/>
+  <text x="36" y="82" font-size="23" font-weight="900" fill="#fff">Add Grocery</text><text x="36" y="107" font-size="13" fill="#fff">Add an item and keep your pantry up to date.</text><rect x="296" y="61" width="58" height="58" rx="20" fill="#ffe08a"/><text x="325" y="100" text-anchor="middle" font-size="25" fill="#285b43">＋</text>
+  <text x="16" y="169" font-size="16" font-weight="800" fill="#303a32">Item Photo</text><text x="16" y="190" font-size="12" fill="#788078">Add a clear photo to recognize this grocery later.</text>
+  <rect x="16" y="202" width="358" height="120" rx="24" fill="#fff" stroke="#dce8d7"/>
+  <rect x="29" y="218" width="88" height="88" rx="14" fill="#f7faec"/><text x="73" y="270" text-anchor="middle" font-size="32" fill="#285b43">▧</text>
+  <text x="131" y="242" font-size="14" font-weight="700" fill="#303a32">No photo added</text><text x="131" y="276" font-size="13" font-weight="600" fill="#285b43">▧  Choose photo</text>
+  <rect x="16" y="339" width="358" height="61" rx="16" fill="#f5f5f0"/><text x="34" y="361" font-size="11" fill="#788078">▣  Item Name</text><text x="34" y="385" font-size="14" fill="#303a32">e.g. Fresh milk</text>
+  <rect x="16" y="414" width="358" height="61" rx="16" fill="#f5f5f0"/><text x="34" y="436" font-size="11" fill="#788078">▦  Category</text><text x="34" y="460" font-size="14" fill="#303a32">Fruits                                      ⌄</text>
+  <rect x="16" y="489" width="171" height="61" rx="16" fill="#f5f5f0"/><text x="34" y="511" font-size="11" fill="#788078">⚖  Quantity</text><text x="34" y="535" font-size="14" fill="#303a32">1</text>
+  <rect x="203" y="489" width="171" height="61" rx="16" fill="#f5f5f0"/><text x="221" y="511" font-size="11" fill="#788078">Unit</text><text x="221" y="535" font-size="14" fill="#303a32">pieces                             ⌄</text>
+  <rect x="16" y="564" width="358" height="61" rx="16" fill="#f5f5f0"/><text x="34" y="586" font-size="11" fill="#788078">₱  Price per unit (optional)</text><text x="34" y="610" font-size="14" fill="#303a32">0.00</text>
+  <rect x="16" y="639" width="171" height="61" rx="16" fill="#f5f5f0"/><text x="34" y="661" font-size="11" fill="#788078">▦  Purchase Date</text><text x="34" y="685" font-size="13" fill="#303a32">Oct 11, 2026</text>
+  <rect x="203" y="639" width="171" height="61" rx="16" fill="#f5f5f0"/><text x="221" y="661" font-size="11" fill="#788078">▦  Expiration Date</text><text x="221" y="685" font-size="12" fill="#788078">Select expiration date</text>
+  <rect x="0" y="752" width="390" height="70" fill="#fff" stroke="#dce8d7"/>
+  <g font-family="Roboto,Arial,sans-serif" text-anchor="middle" font-size="10"><text x="39" y="781" fill="#788078">▦</text><text x="39" y="802" fill="#788078">Dashboard</text><text x="117" y="781" fill="#788078">▤</text><text x="117" y="802" fill="#788078">Inventory</text><text x="195" y="781" fill="#285b43">＋</text><text x="195" y="802" fill="#285b43" font-weight="700">Add</text><text x="273" y="781" fill="#788078">▥</text><text x="273" y="802" fill="#788078">Reports</text><text x="351" y="781" fill="#788078">○</text><text x="351" y="802" fill="#788078">Settings</text></g>
+  <rect x="150" y="832" width="90" height="5" rx="3" fill="#dce8d7"/>
+</svg>

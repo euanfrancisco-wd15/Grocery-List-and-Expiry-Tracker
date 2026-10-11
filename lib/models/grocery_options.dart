@@ -8,6 +8,8 @@ class GroceryOptions {
     'Seafood',
     'Dairy',
     'Beverages',
+    'Bakery',
+    'Pantry',
     'Snacks',
     'Canned Goods',
     'Frozen',

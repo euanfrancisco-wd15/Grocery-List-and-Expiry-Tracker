@@ -8,6 +8,7 @@ class Grocery {
     required this.name,
     required this.category,
     required this.quantity,
+    this.unitPrice = 0,
     required this.unit,
     required this.purchaseDate,
     required this.expirationDate,
@@ -15,12 +16,15 @@ class Grocery {
     required this.notes,
     required this.createdAt,
     required this.updatedAt,
+    this.imagePath,
   });
 
   final String id;
   final String name;
   final String category;
   final double quantity;
+  final double unitPrice;
+  double get totalCost => quantity * unitPrice;
   final String unit;
   final DateTime purchaseDate;
   final DateTime expirationDate;
@@ -28,12 +32,14 @@ class Grocery {
   final String notes;
   final DateTime createdAt;
   final DateTime updatedAt;
+  final String? imagePath;
 
   Grocery copyWith({
     String? id,
     String? name,
     String? category,
     double? quantity,
+    double? unitPrice,
     String? unit,
     DateTime? purchaseDate,
     DateTime? expirationDate,
@@ -41,12 +47,14 @@ class Grocery {
     String? notes,
     DateTime? createdAt,
     DateTime? updatedAt,
+    String? imagePath,
   }) {
     return Grocery(
       id: id ?? this.id,
       name: name ?? this.name,
       category: category ?? this.category,
       quantity: quantity ?? this.quantity,
+      unitPrice: unitPrice ?? this.unitPrice,
       unit: unit ?? this.unit,
       purchaseDate: purchaseDate ?? this.purchaseDate,
       expirationDate: expirationDate ?? this.expirationDate,
@@ -54,6 +62,7 @@ class Grocery {
       notes: notes ?? this.notes,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
+      imagePath: imagePath ?? this.imagePath,
     );
   }
 
@@ -64,6 +73,7 @@ class Grocery {
       name: data['name'] as String? ?? '',
       category: data['category'] as String? ?? 'Other',
       quantity: (data['quantity'] as num?)?.toDouble() ?? 0,
+      unitPrice: (data['unitPrice'] as num?)?.toDouble() ?? 0,
       unit: data['unit'] as String? ?? 'pieces',
       purchaseDate: _readDate(data['purchaseDate']),
       expirationDate: _readDate(data['expirationDate']),
@@ -71,6 +81,7 @@ class Grocery {
       notes: data['notes'] as String? ?? '',
       createdAt: _readDate(data['createdAt']),
       updatedAt: _readDate(data['updatedAt']),
+      imagePath: data['imagePath'] as String?,
     );
   }
 
@@ -79,6 +90,7 @@ class Grocery {
       'name': name,
       'category': category,
       'quantity': quantity,
+      'unitPrice': unitPrice,
       'unit': unit,
       'purchaseDate': Timestamp.fromDate(purchaseDate),
       'expirationDate': Timestamp.fromDate(expirationDate),
@@ -86,6 +98,7 @@ class Grocery {
       'notes': notes,
       'createdAt': Timestamp.fromDate(createdAt),
       'updatedAt': Timestamp.fromDate(updatedAt),
+      'imagePath': imagePath,
     };
   }
 

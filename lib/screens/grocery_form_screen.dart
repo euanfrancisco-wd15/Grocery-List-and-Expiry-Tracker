@@ -1,11 +1,17 @@
+import 'dart:typed_data';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 
 import '../models/grocery.dart';
 import '../models/grocery_options.dart';
 import '../services/grocery_service.dart';
+import '../services/device_notification_service.dart';
+import '../services/grocery_image_service.dart';
 import '../theme/app_colors.dart';
 import '../widgets/custom_text_field.dart';
+import '../widgets/section_header.dart';
 
 class GroceryFormScreen extends StatefulWidget {
   const GroceryFormScreen({
@@ -14,12 +20,14 @@ class GroceryFormScreen extends StatefulWidget {
     required this.groceryService,
     this.grocery,
     this.onSaved,
+    this.onCancel,
   });
 
   final User user;
   final GroceryService groceryService;
   final Grocery? grocery;
   final VoidCallback? onSaved;
+  final VoidCallback? onCancel;
 
   @override
   State<GroceryFormScreen> createState() => _GroceryFormScreenState();
@@ -29,8 +37,11 @@ class _GroceryFormScreenState extends State<GroceryFormScreen> {
   final _formKey = GlobalKey<FormState>();
   final _nameController = TextEditingController();
   final _quantityController = TextEditingController();
+  final _unitPriceController = TextEditingController();
   final _storageLocationController = TextEditingController();
   final _notesController = TextEditingController();
+  final _imagePicker = ImagePicker();
+  final _imageService = GroceryImageService();
 
   late String _category;
   late String _unit;
@@ -38,6 +49,9 @@ class _GroceryFormScreenState extends State<GroceryFormScreen> {
   DateTime? _expirationDate;
   bool _isSaving = false;
   String? _errorMessage;
+  XFile? _pickedImage;
+  bool _removeExistingImage = false;
+  late Future<Uint8List?> _existingImageBytes;
 
   bool get _isEditing => widget.grocery != null;
 
@@ -45,10 +59,14 @@ class _GroceryFormScreenState extends State<GroceryFormScreen> {
   void initState() {
     super.initState();
     final grocery = widget.grocery;
+    _existingImageBytes = _imageService.readLocal(grocery?.imagePath ?? '');
     _nameController.text = grocery?.name ?? '';
     _quantityController.text = grocery == null
         ? ''
         : _formatQuantity(grocery.quantity);
+    _unitPriceController.text = grocery == null || grocery.unitPrice == 0
+        ? ''
+        : grocery.unitPrice.toStringAsFixed(2);
     _storageLocationController.text = grocery?.storageLocation ?? '';
     _notesController.text = grocery?.notes ?? '';
     _category = grocery?.category ?? GroceryOptions.categories.first;
@@ -61,6 +79,7 @@ class _GroceryFormScreenState extends State<GroceryFormScreen> {
   void dispose() {
     _nameController.dispose();
     _quantityController.dispose();
+    _unitPriceController.dispose();
     _storageLocationController.dispose();
     _notesController.dispose();
     super.dispose();
@@ -77,6 +96,19 @@ class _GroceryFormScreenState extends State<GroceryFormScreen> {
       });
       return;
     }
+    if (DateTime(
+      _expirationDate!.year,
+      _expirationDate!.month,
+      _expirationDate!.day,
+    ).isBefore(
+      DateTime(_purchaseDate.year, _purchaseDate.month, _purchaseDate.day),
+    )) {
+      setState(() {
+        _errorMessage =
+            'Expiration date cannot be earlier than the purchase date.';
+      });
+      return;
+    }
 
     setState(() {
       _isSaving = true;
@@ -84,21 +116,36 @@ class _GroceryFormScreenState extends State<GroceryFormScreen> {
     });
 
     final now = DateTime.now();
-    final grocery = Grocery(
-      id: widget.grocery?.id ?? '',
-      name: _nameController.text.trim(),
-      category: _category,
-      quantity: double.parse(_quantityController.text.trim()),
-      unit: _unit,
-      purchaseDate: _purchaseDate,
-      expirationDate: _expirationDate!,
-      storageLocation: _storageLocationController.text.trim(),
-      notes: _notesController.text.trim(),
-      createdAt: widget.grocery?.createdAt ?? now,
-      updatedAt: now,
-    );
-
+    final groceryId =
+        widget.grocery?.id ??
+        widget.groceryService.createGroceryId(widget.user.uid);
+    String? savedLocalImagePath;
+    final previousImagePath = widget.grocery?.imagePath;
+    var imagePath = _removeExistingImage ? null : previousImagePath;
     try {
+      if (_pickedImage != null) {
+        savedLocalImagePath = await _imageService.saveLocal(
+          groceryId: groceryId,
+          image: _pickedImage!,
+        );
+        imagePath = savedLocalImagePath;
+      }
+      final grocery = Grocery(
+        id: groceryId,
+        name: _nameController.text.trim(),
+        category: _category,
+        quantity: double.parse(_quantityController.text.trim()),
+        unitPrice: double.tryParse(_unitPriceController.text.trim()) ?? 0,
+        unit: _unit,
+        purchaseDate: _purchaseDate,
+        expirationDate: _expirationDate!,
+        storageLocation: _storageLocationController.text.trim(),
+        notes: _notesController.text.trim(),
+        createdAt: widget.grocery?.createdAt ?? now,
+        updatedAt: now,
+        imagePath: imagePath,
+      );
+
       if (_isEditing) {
         await widget.groceryService.updateGrocery(
           userId: widget.user.uid,
@@ -110,6 +157,16 @@ class _GroceryFormScreenState extends State<GroceryFormScreen> {
           grocery: grocery,
         );
       }
+      if (previousImagePath != null && previousImagePath != imagePath) {
+        try {
+          await _imageService.deleteLocal(previousImagePath);
+        } on Object {
+          // A stale photo can be cleaned up later without failing the grocery save.
+        }
+      }
+      await DeviceNotificationService.instance.evaluateBudgetAfterExpense(
+        userId: widget.user.uid,
+      );
 
       if (!mounted) {
         return;
@@ -128,14 +185,18 @@ class _GroceryFormScreenState extends State<GroceryFormScreen> {
         Navigator.of(context).pop(grocery);
       }
     } on Object catch (error) {
+      if (savedLocalImagePath != null) {
+        try {
+          await _imageService.deleteLocal(savedLocalImagePath);
+        } on Object {
+          // Preserve the original save error if local cleanup fails.
+        }
+      }
       if (!mounted) {
         return;
       }
       setState(() {
-        _errorMessage = widget.groceryService.describeError(
-          error,
-          action: 'save this grocery',
-        );
+        _errorMessage = _describeSaveError(error);
       });
     } finally {
       if (mounted) {
@@ -144,6 +205,82 @@ class _GroceryFormScreenState extends State<GroceryFormScreen> {
         });
       }
     }
+  }
+
+  String _describeSaveError(Object error) {
+    if (error is ArgumentError) {
+      return error.message?.toString() ?? 'The selected image is not valid.';
+    }
+    return widget.groceryService.describeError(
+      error,
+      action: 'save this grocery',
+    );
+  }
+
+  Future<void> _pickImage(ImageSource source) async {
+    try {
+      final image = await _imagePicker.pickImage(
+        source: source,
+        maxWidth: 1600,
+        maxHeight: 1600,
+        imageQuality: 82,
+      );
+      if (image != null && mounted) {
+        setState(() {
+          _pickedImage = image;
+          _removeExistingImage = false;
+          _errorMessage = null;
+        });
+      }
+    } on Object catch (error) {
+      if (mounted) {
+        setState(
+          () => _errorMessage =
+              'Could not select that image. ${error.toString()}',
+        );
+      }
+    }
+  }
+
+  Future<void> _showImageOptions() async {
+    await showModalBottomSheet<void>(
+      context: context,
+      builder: (context) => SafeArea(
+        child: Wrap(
+          children: [
+            ListTile(
+              leading: const Icon(Icons.photo_library_outlined),
+              title: const Text('Choose from gallery'),
+              onTap: () {
+                Navigator.pop(context);
+                _pickImage(ImageSource.gallery);
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.camera_alt_outlined),
+              title: const Text('Take a photo'),
+              onTap: () {
+                Navigator.pop(context);
+                _pickImage(ImageSource.camera);
+              },
+            ),
+            if (_pickedImage != null ||
+                (widget.grocery?.imagePath != null && !_removeExistingImage))
+              ListTile(
+                leading: const Icon(Icons.delete_outline),
+                title: const Text('Remove photo'),
+                onTap: () {
+                  Navigator.pop(context);
+                  setState(() {
+                    _pickedImage = null;
+                    _removeExistingImage = true;
+                  });
+                },
+              ),
+          ],
+        ),
+      ),
+    );
   }
 
   Future<void> _pickPurchaseDate() async {
@@ -180,20 +317,24 @@ class _GroceryFormScreenState extends State<GroceryFormScreen> {
     final title = _isEditing ? 'Edit Grocery' : 'Add Grocery';
 
     return Scaffold(
-      appBar: AppBar(title: Text(title)),
       body: SafeArea(
         child: Form(
           key: _formKey,
           child: ListView(
-            padding: const EdgeInsets.fromLTRB(24, 12, 24, 28),
+            padding: const EdgeInsets.fromLTRB(24, 20, 24, 28),
             children: [
-              Text(
-                title,
-                style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                  fontWeight: FontWeight.w900,
-                ),
+              SectionHeader(
+                title: title,
+                subtitle: _isEditing
+                    ? 'Update the details and keep it fresh.'
+                    : 'Add an item and keep your pantry up to date.',
+                icon: _isEditing
+                    ? Icons.edit_note_rounded
+                    : Icons.add_shopping_cart_rounded,
               ),
               const SizedBox(height: 18),
+              _photoField(),
+              const SizedBox(height: 16),
               CustomTextField(
                 controller: _nameController,
                 label: 'Item Name',
@@ -241,7 +382,9 @@ class _GroceryFormScreenState extends State<GroceryFormScreen> {
                       prefixIcon: Icons.scale_outlined,
                       validator: (value) {
                         final quantity = double.tryParse((value ?? '').trim());
-                        if (quantity == null || quantity <= 0) {
+                        if (quantity == null ||
+                            !quantity.isFinite ||
+                            quantity <= 0) {
                           return 'Enter a valid quantity.';
                         }
                         return null;
@@ -271,6 +414,23 @@ class _GroceryFormScreenState extends State<GroceryFormScreen> {
                     ),
                   ),
                 ],
+              ),
+              const SizedBox(height: 14),
+              CustomTextField(
+                controller: _unitPriceController,
+                label: 'Price per unit (optional)',
+                keyboardType: const TextInputType.numberWithOptions(
+                  decimal: true,
+                ),
+                prefixIcon: Icons.payments_outlined,
+                validator: (value) {
+                  final price = double.tryParse((value ?? '').trim());
+                  if ((value ?? '').trim().isNotEmpty &&
+                      (price == null || !price.isFinite || price < 0)) {
+                    return 'Enter a valid price.';
+                  }
+                  return null;
+                },
               ),
               const SizedBox(height: 14),
               _DateField(
@@ -309,6 +469,14 @@ class _GroceryFormScreenState extends State<GroceryFormScreen> {
                 const SizedBox(height: 16),
                 _FormErrorMessage(message: _errorMessage!),
               ],
+              const SizedBox(height: 12),
+              OutlinedButton(
+                onPressed: _isSaving
+                    ? null
+                    : (widget.onCancel ??
+                          () => Navigator.of(context).maybePop()),
+                child: const Text('Cancel'),
+              ),
               const SizedBox(height: 24),
               ElevatedButton.icon(
                 onPressed: _isSaving ? null : _save,
@@ -335,6 +503,134 @@ class _GroceryFormScreenState extends State<GroceryFormScreen> {
       return value.toInt().toString();
     }
     return value.toString();
+  }
+
+  Widget _photoField() {
+    Widget preview;
+    if (_pickedImage != null) {
+      preview = FutureBuilder<Uint8List>(
+        future: _pickedImage!.readAsBytes(),
+        builder: (context, snapshot) => snapshot.hasData
+            ? Image.memory(
+                snapshot.data!,
+                fit: BoxFit.cover,
+                width: double.infinity,
+              )
+            : const Center(child: CircularProgressIndicator()),
+      );
+    } else if (!_removeExistingImage && widget.grocery?.imagePath != null) {
+      preview = FutureBuilder<Uint8List?>(
+        future: _existingImageBytes,
+        builder: (context, snapshot) => snapshot.data == null
+            ? const Center(
+                child: Icon(
+                  Icons.broken_image_outlined,
+                  size: 36,
+                  color: AppColors.textSecondary,
+                ),
+              )
+            : Image.memory(
+                snapshot.data!,
+                fit: BoxFit.cover,
+                width: double.infinity,
+                errorBuilder: (_, _, _) => const Center(
+                  child: Icon(
+                    Icons.broken_image_outlined,
+                    size: 36,
+                    color: AppColors.textSecondary,
+                  ),
+                ),
+              ),
+      );
+    } else {
+      preview = const ColoredBox(
+        color: AppColors.lightGreenBackground,
+        child: Center(
+          child: Icon(
+            Icons.add_a_photo_outlined,
+            size: 34,
+            color: AppColors.darkGreen,
+          ),
+        ),
+      );
+    }
+    final hasPhoto =
+        _pickedImage != null ||
+        (!_removeExistingImage && widget.grocery?.imagePath != null);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Item Photo',
+          style: Theme.of(
+            context,
+          ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w800),
+        ),
+        const SizedBox(height: 4),
+        const Text(
+          'Add a clear photo to recognize this grocery later.',
+          style: TextStyle(color: AppColors.textSecondary),
+        ),
+        const SizedBox(height: 10),
+        Card(
+          clipBehavior: Clip.antiAlias,
+          child: Padding(
+            padding: const EdgeInsets.all(12),
+            child: Row(
+              children: [
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(14),
+                  child: SizedBox(width: 88, height: 88, child: preview),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        hasPhoto ? 'Photo selected' : 'No photo added',
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(fontWeight: FontWeight.w700),
+                      ),
+                      const SizedBox(height: 6),
+                      TextButton.icon(
+                        onPressed: _isSaving ? null : _showImageOptions,
+                        icon: Icon(
+                          hasPhoto
+                              ? Icons.edit_outlined
+                              : Icons.add_a_photo_outlined,
+                        ),
+                        label: Text(
+                          hasPhoto ? 'Change photo' : 'Choose photo',
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                      if (hasPhoto)
+                        TextButton.icon(
+                          onPressed: _isSaving
+                              ? null
+                              : () => setState(() {
+                                  _pickedImage = null;
+                                  _removeExistingImage = true;
+                                }),
+                          icon: const Icon(
+                            Icons.delete_outline_rounded,
+                            size: 18,
+                          ),
+                          label: const Text('Remove'),
+                        ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
   }
 }
 

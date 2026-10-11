@@ -35,22 +35,19 @@ class FirebaseSetupScreen extends StatelessWidget {
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Container(
-                          width: 86,
-                          height: 86,
-                          decoration: const BoxDecoration(
-                            color: AppColors.lightGreenBackground,
-                            shape: BoxShape.circle,
-                          ),
-                          child: const Icon(
-                            Icons.local_grocery_store_rounded,
-                            color: AppColors.primaryGreen,
-                            size: 46,
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(18),
+                          child: Image.asset(
+                            'assets/images/gropanda_logo.png',
+                            width: 86,
+                            height: 86,
+                            fit: BoxFit.cover,
+                            semanticLabel: 'GroPanda panda grocery logo',
                           ),
                         ),
                         const SizedBox(height: 22),
                         const Text(
-                          'Grocery Tracker',
+                          'GroPanda',
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             color: AppColors.darkGreen,

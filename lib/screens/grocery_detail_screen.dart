@@ -5,6 +5,7 @@ import '../models/grocery.dart';
 import '../services/grocery_service.dart';
 import '../theme/app_colors.dart';
 import '../widgets/expiry_badge.dart';
+import '../widgets/grocery_photo.dart';
 import 'grocery_form_screen.dart';
 
 class GroceryDetailScreen extends StatefulWidget {
@@ -117,6 +118,14 @@ class _GroceryDetailScreenState extends State<GroceryDetailScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    if (_grocery.imagePath != null) ...[
+                      GroceryPhoto(
+                        path: _grocery.imagePath!,
+                        height: 200,
+                        width: double.infinity,
+                      ),
+                      const SizedBox(height: 18),
+                    ],
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -144,6 +153,12 @@ class _GroceryDetailScreenState extends State<GroceryDetailScreen> {
                       label: 'Quantity',
                       value:
                           '${_formatQuantity(_grocery.quantity)} ${_grocery.unit}',
+                    ),
+                    _DetailRow(
+                      label: 'Estimated Cost',
+                      value: _grocery.unitPrice <= 0
+                          ? 'Not specified'
+                          : '₱${_grocery.totalCost.toStringAsFixed(2)}',
                     ),
                     _DetailRow(
                       label: 'Purchase Date',

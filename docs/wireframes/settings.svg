@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 390 844" role="img" aria-labelledby="title desc">
+  <title id="title">GroPanda settings screen</title>
+  <desc id="desc">Settings screen with section banner, account card, notification master switch, preferred time, and individual expiry and budget alert switches. Additional notification history, security, and backup settings continue below.</desc>
+  <defs><style>text{font-family:Roboto,Arial,sans-serif}.muted{fill:#788078}</style><linearGradient id="brand" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#a8e6a1"/><stop offset="1" stop-color="#285b43"/></linearGradient></defs>
+  <rect width="390" height="844" fill="#f7faec"/>
+  <text x="18" y="26" font-size="12" fill="#303a32">9:41</text><text x="316" y="26" font-size="12" fill="#303a32">●  Wi-Fi  ▰</text>
+  <rect x="16" y="42" width="358" height="96" rx="26" fill="url(#brand)"/><circle cx="369" cy="34" r="54" fill="#fff" fill-opacity=".12"/>
+  <text x="36" y="82" font-size="23" font-weight="900" fill="#fff">Settings</text><text x="36" y="107" font-size="13" fill="#fff">Your account and app preferences.</text><rect x="296" y="61" width="58" height="58" rx="20" fill="#ffe08a"/><text x="325" y="100" text-anchor="middle" font-size="25" fill="#285b43">⚙</text>
+  <rect x="16" y="156" width="358" height="139" rx="24" fill="#fff" stroke="#dce8d7"/>
+  <circle cx="54" cy="198" r="22" fill="#a8e6a1" fill-opacity=".3"/><text x="54" y="205" text-anchor="middle" font-size="20" fill="#285b43">●</text>
+  <text x="89" y="194" font-size="15" font-weight="700" fill="#303a32">@username</text><text x="89" y="219" font-size="13" fill="#788078">name@example.com</text>
+  <path d="M32 239h326" stroke="#dce8d7"/><text x="32" y="270" font-size="15" font-weight="800" fill="#303a32">Notification Settings</text>
+  <rect x="16" y="307" width="358" height="64" rx="18" fill="#fdfefb" stroke="#dce8d7"/><text x="36" y="335" font-size="14" font-weight="600" fill="#303a32">Notifications</text><rect x="311" y="325" width="45" height="25" rx="13" fill="#a8e6a1"/><circle cx="342" cy="337" r="9" fill="#fff"/>
+  <rect x="16" y="379" width="358" height="75" rx="18" fill="#f7fbff" stroke="#a7d8ff" stroke-opacity=".7"/><text x="36" y="408" font-size="14" font-weight="600" fill="#303a32">◷  Preferred notification time</text><text x="36" y="434" font-size="13" fill="#788078">8:00 AM</text><text x="351" y="422" text-anchor="end" font-size="18" fill="#788078">›</text>
+  <rect x="16" y="462" width="358" height="52" rx="18" fill="#fffdf5" stroke="#ffe08a" stroke-opacity=".8"/><text x="36" y="494" font-size="14" font-weight="600" fill="#303a32">7 days before</text><rect x="311" y="476" width="45" height="25" rx="13" fill="#a8e6a1"/><circle cx="342" cy="488" r="9" fill="#fff"/>
+  <rect x="16" y="522" width="358" height="52" rx="18" fill="#fffdf5" stroke="#ffe08a" stroke-opacity=".8"/><text x="36" y="554" font-size="14" font-weight="600" fill="#303a32">3 days before</text><rect x="311" y="536" width="45" height="25" rx="13" fill="#a8e6a1"/><circle cx="342" cy="548" r="9" fill="#fff"/>
+  <rect x="16" y="582" width="358" height="52" rx="18" fill="#fffdf5" stroke="#ffe08a" stroke-opacity=".8"/><text x="36" y="614" font-size="14" font-weight="600" fill="#303a32">1 day before</text><rect x="311" y="596" width="45" height="25" rx="13" fill="#a8e6a1"/><circle cx="342" cy="608" r="9" fill="#fff"/>
+  <rect x="16" y="642" width="358" height="52" rx="18" fill="#fffdf5" stroke="#ffe08a" stroke-opacity=".8"/><text x="36" y="674" font-size="14" font-weight="600" fill="#303a32">On expiry</text><rect x="311" y="656" width="45" height="25" rx="13" fill="#a8e6a1"/><circle cx="342" cy="668" r="9" fill="#fff"/>
+  <rect x="0" y="752" width="390" height="70" fill="#fff" stroke="#dce8d7"/>
+  <g font-family="Roboto,Arial,sans-serif" text-anchor="middle" font-size="10"><text x="39" y="781" fill="#788078">▦</text><text x="39" y="802" fill="#788078">Dashboard</text><text x="117" y="781" fill="#788078">▤</text><text x="117" y="802" fill="#788078">Inventory</text><text x="195" y="781" fill="#788078">＋</text><text x="195" y="802" fill="#788078">Add</text><text x="273" y="781" fill="#788078">▥</text><text x="273" y="802" fill="#788078">Reports</text><text x="351" y="781" fill="#285b43">○</text><text x="351" y="802" fill="#285b43" font-weight="700">Settings</text></g>
+  <rect x="150" y="832" width="90" height="5" rx="3" fill="#dce8d7"/>
+</svg>

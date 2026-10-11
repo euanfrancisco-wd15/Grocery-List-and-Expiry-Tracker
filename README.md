@@ -1,17 +1,29 @@
-# grocery_tracker
+# GroPanda
 
-A new Flutter project.
+GroPanda is a Flutter grocery inventory and expiry tracker. It helps users
+manage groceries, get expiry reminders, and track spending against monthly
+budgets. Firebase Authentication handles sign-in, and Cloud Firestore stores
+user-scoped profiles and records.
 
-## Getting Started
+## Quick start
 
-This project is a starting point for a Flutter application.
+Requirements: Flutter with Dart 3.12.2 or later and a configured Firebase
+project. From the repository root:
 
-A few resources to get you started if this is your first Flutter project:
+```sh
+flutter pub get
+flutter devices
+flutter run -d <device-id>
+```
 
-- [Learn Flutter](https://docs.flutter.dev/get-started/learn-flutter)
-- [Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Flutter learning resources](https://docs.flutter.dev/reference/learning-resources)
+The generated Firebase configuration targets the existing project
+`grocery-list-and-expiry-track`. See the
+[complete setup guide](docs/SETUP.md) for Firebase configuration, platform
+prerequisites, testing, and troubleshooting.
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## Documentation
+
+- [Complete setup and troubleshooting guide](docs/SETUP.md)
+- [System architecture, Firestore schema, and wireframes](docs/SYSTEM_DESIGN.md)
+- [Detailed system architecture visualization](docs/architecture.svg)
+- [System design PDF](docs/SYSTEM_DESIGN.pdf)

@@ -9,13 +9,14 @@ class AppTheme {
     final colorScheme = ColorScheme.fromSeed(
       seedColor: AppColors.primaryGreen,
       brightness: Brightness.light,
-      primary: AppColors.primaryGreen,
+      primary: AppColors.darkGreen,
       secondary: AppColors.darkGreen,
       surface: Colors.white,
     );
 
     final base = ThemeData(
       useMaterial3: true,
+      splashFactory: InkSparkle.splashFactory,
       colorScheme: colorScheme,
       scaffoldBackgroundColor: AppColors.lightGreenBackground,
       fontFamily: 'Roboto',
@@ -24,9 +25,17 @@ class AppTheme {
     return base.copyWith(
       appBarTheme: const AppBarTheme(
         centerTitle: false,
+        toolbarHeight: 68,
         elevation: 0,
-        backgroundColor: AppColors.lightGreenBackground,
-        foregroundColor: AppColors.textPrimary,
+        scrolledUnderElevation: 1,
+        backgroundColor: AppColors.darkGreen,
+        surfaceTintColor: Colors.transparent,
+        foregroundColor: Colors.white,
+        titleTextStyle: TextStyle(
+          color: Colors.white,
+          fontSize: 21,
+          fontWeight: FontWeight.w800,
+        ),
       ),
       cardTheme: CardThemeData(
         elevation: 0,
@@ -40,8 +49,8 @@ class AppTheme {
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
           backgroundColor: AppColors.primaryGreen,
-          foregroundColor: Colors.white,
-          elevation: 0,
+          foregroundColor: AppColors.darkGreen,
+          elevation: 1,
           minimumSize: const Size.fromHeight(54),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(18),

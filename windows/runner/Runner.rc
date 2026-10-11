@@ -90,12 +90,12 @@ BEGIN
         BLOCK "040904e4"
         BEGIN
             VALUE "CompanyName", "com.school.grocerytracker" "\0"
-            VALUE "FileDescription", "grocery_tracker" "\0"
+            VALUE "FileDescription", "GroPanda" "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
             VALUE "InternalName", "grocery_tracker" "\0"
             VALUE "LegalCopyright", "Copyright (C) 2026 com.school.grocerytracker. All rights reserved." "\0"
             VALUE "OriginalFilename", "grocery_tracker.exe" "\0"
-            VALUE "ProductName", "grocery_tracker" "\0"
+            VALUE "ProductName", "GroPanda" "\0"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"
         END
     END

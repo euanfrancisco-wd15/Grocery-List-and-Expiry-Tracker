@@ -1,0 +1,248 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1050" role="img" aria-labelledby="title description">
+  <title id="title">GroPanda UML component architecture diagram</title>
+  <desc id="description">Lucidchart-style UML component diagram showing the shopper, Flutter application components, application services, Firebase components, platform services, component ports, and labeled dependencies.</desc>
+  <defs>
+    <style>
+      text { font-family: Arial, sans-serif; fill: #26352c; }
+      .title { font-size: 29px; font-weight: 700; fill: #285b43; }
+      .subtitle { font-size: 14px; fill: #65756a; }
+      .boundary-title { font-size: 18px; font-weight: 700; fill: #285b43; }
+      .boundary-subtitle { font-size: 11px; fill: #65756a; }
+      .component-title { font-size: 13px; font-weight: 700; fill: #285b43; }
+      .component-copy { font-size: 10.5px; }
+      .section-title { font-size: 12px; font-weight: 700; fill: #526356; letter-spacing: .35px; }
+      .flow { font-size: 10px; font-weight: 600; fill: #526356; }
+      .port-label { font-size: 9px; fill: #526356; }
+      .legend { font-size: 10px; fill: #526356; }
+    </style>
+    <marker id="dependency" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto">
+      <path d="M1,1 L9,5 L1,9" fill="none" stroke="#526356" stroke-width="1.5"/>
+    </marker>
+    <marker id="dataflow" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto">
+      <path d="M0,0 L9,4.5 L0,9 z" fill="#428451"/>
+    </marker>
+    <marker id="localflow" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto">
+      <path d="M0,0 L9,4.5 L0,9 z" fill="#b7862f"/>
+    </marker>
+    <g id="componentGlyph" fill="none" stroke="#285b43" stroke-width="1.3">
+      <path d="M0 5h8v7h-8zM0 15h8v7h-8zM8 8h7M8 18h7"/>
+    </g>
+    <g id="actorGlyph" fill="none" stroke="#285b43" stroke-width="2.2" stroke-linecap="round">
+      <circle cx="21" cy="10" r="8" fill="#fff"/>
+      <path d="M21 18v30M5 31l16-8 16 8M21 48 8 68M21 48l13 20"/>
+    </g>
+  </defs>
+
+  <rect width="1600" height="1050" fill="#fff"/>
+  <text x="36" y="47" class="title">GroPanda · UML Component Diagram</text>
+  <text x="36" y="71" class="subtitle">Component boundaries, provided services, dependencies, and runtime data paths · Flutter + Firebase</text>
+
+  <g transform="translate(1050 39)">
+    <path d="M0 0h34" stroke="#526356" stroke-width="1.6" stroke-dasharray="5 4" marker-end="url(#dependency)"/>
+    <text x="43" y="4" class="legend">UML dependency</text>
+    <path d="M162 0h34" stroke="#428451" stroke-width="2.3" marker-end="url(#dataflow)"/>
+    <text x="205" y="4" class="legend">Firebase data/auth flow</text>
+    <path d="M374 0h34" stroke="#b7862f" stroke-width="2.3" stroke-dasharray="7 4" marker-end="url(#localflow)"/>
+    <text x="417" y="4" class="legend">Device / file flow</text>
+  </g>
+
+  <rect x="176" y="112" width="856" height="766" rx="18" fill="#fbfdfb" stroke="#8eaa93" stroke-width="2"/>
+  <rect x="176" y="112" width="856" height="46" rx="18" fill="#eaf4e8"/>
+  <path d="M176 140v18h856v-18" fill="#eaf4e8"/>
+  <use href="#componentGlyph" x="192" y="123"/>
+  <text x="218" y="137" class="boundary-title">«subsystem» GroPanda Flutter Client</text>
+  <text x="1010" y="136" text-anchor="end" class="boundary-subtitle">Android · iOS · Web · macOS · Windows</text>
+
+  <rect x="198" y="176" width="812" height="220" rx="14" fill="#fff" stroke="#bfd1c1" stroke-width="1.3"/>
+  <text x="216" y="199" class="section-title">PRESENTATION LAYER · WIDGETS AND NAVIGATION</text>
+
+  <g>
+    <rect x="218" y="218" width="200" height="74" rx="8" fill="#f5faf3" stroke="#7f9f84" stroke-width="1.3"/>
+    <path d="M378 218h32v15h-32zM378 218v15" fill="#eaf4e8" stroke="#7f9f84" stroke-width="1.2"/>
+    <use href="#componentGlyph" x="228" y="230"/>
+    <text x="251" y="243" class="component-title">Auth UI</text>
+    <text x="230" y="263" class="component-copy">WelcomeScreen · LoginScreen</text>
+    <text x="230" y="279" class="component-copy">UsernameSetupScreen</text>
+
+    <rect x="435" y="218" width="172" height="74" rx="8" fill="#f5faf3" stroke="#7f9f84" stroke-width="1.3"/>
+    <path d="M575 218h32v15h-32zM575 218v15" fill="#eaf4e8" stroke="#7f9f84" stroke-width="1.2"/>
+    <use href="#componentGlyph" x="445" y="230"/>
+    <text x="468" y="243" class="component-title">AuthGate</text>
+    <text x="447" y="263" class="component-copy">Routes by auth state</text>
+    <text x="447" y="279" class="component-copy">and profile completion</text>
+
+    <rect x="624" y="218" width="174" height="74" rx="8" fill="#f5faf3" stroke="#7f9f84" stroke-width="1.3"/>
+    <path d="M766 218h32v15h-32zM766 218v15" fill="#eaf4e8" stroke="#7f9f84" stroke-width="1.2"/>
+    <use href="#componentGlyph" x="634" y="230"/>
+    <text x="657" y="243" class="component-title">MainShell</text>
+    <text x="636" y="263" class="component-copy">Persistent navigation</text>
+    <text x="636" y="279" class="component-copy">and screen composition</text>
+
+    <rect x="815" y="218" width="174" height="74" rx="8" fill="#f5faf3" stroke="#7f9f84" stroke-width="1.3"/>
+    <path d="M957 218h32v15h-32zM957 218v15" fill="#eaf4e8" stroke="#7f9f84" stroke-width="1.2"/>
+    <use href="#componentGlyph" x="825" y="230"/>
+    <text x="848" y="243" class="component-title">Notifications UI</text>
+    <text x="827" y="263" class="component-copy">Notification center</text>
+    <text x="827" y="279" class="component-copy">and deep-link routing</text>
+  </g>
+
+  <rect x="218" y="313" width="771" height="63" rx="10" fill="#f7faf7" stroke="#d4e1d5"/>
+  <text x="234" y="334" class="component-title">MainShell screen components</text>
+  <text x="234" y="354" class="component-copy">DashboardScreen · InventoryScreen · GroceryFormScreen · GroceryDetailScreen · ReportsScreen · Settings/Profile</text>
+  <circle cx="989" cy="345" r="7" fill="#fff" stroke="#428451" stroke-width="2"/>
+  <text x="974" y="365" text-anchor="end" class="port-label">user actions / view state</text>
+
+  <rect x="198" y="412" width="812" height="420" rx="14" fill="#fff" stroke="#bfd1c1" stroke-width="1.3"/>
+  <text x="216" y="435" class="section-title">APPLICATION LAYER · SERVICES AND DOMAIN LOGIC</text>
+
+  <g>
+    <rect x="218" y="457" width="238" height="105" rx="8" fill="#eef5fc" stroke="#7c9eb9" stroke-width="1.3"/>
+    <path d="M424 457h32v15h-32zM424 457v15" fill="#e4eff8" stroke="#7c9eb9" stroke-width="1.2"/>
+    <use href="#componentGlyph" x="228" y="469"/>
+    <text x="251" y="482" class="component-title">AuthService</text>
+    <text x="231" y="503" class="component-copy">Sign-in / sign-up / reset</text>
+    <text x="231" y="520" class="component-copy">Profile and username writes</text>
+    <text x="231" y="540" class="component-copy">Firebase UID ownership</text>
+
+    <rect x="478" y="457" width="238" height="105" rx="8" fill="#eef5fc" stroke="#7c9eb9" stroke-width="1.3"/>
+    <path d="M684 457h32v15h-32zM684 457v15" fill="#e4eff8" stroke="#7c9eb9" stroke-width="1.2"/>
+    <use href="#componentGlyph" x="488" y="469"/>
+    <text x="511" y="482" class="component-title">GroceryService</text>
+    <text x="491" y="503" class="component-copy">Inventory reads and writes</text>
+    <text x="491" y="520" class="component-copy">Batched grocery + expense save</text>
+    <text x="491" y="540" class="component-copy">Grocery delete retains ledger</text>
+
+    <rect x="738" y="457" width="251" height="105" rx="8" fill="#eef5fc" stroke="#7c9eb9" stroke-width="1.3"/>
+    <path d="M957 457h32v15h-32zM957 457v15" fill="#e4eff8" stroke="#7c9eb9" stroke-width="1.2"/>
+    <use href="#componentGlyph" x="748" y="469"/>
+    <text x="771" y="482" class="component-title">ExpenseService</text>
+    <text x="751" y="503" class="component-copy">Manual expense CRUD</text>
+    <text x="751" y="520" class="component-copy">Protects grocery-linked entries</text>
+    <text x="751" y="540" class="component-copy">Reports expense history</text>
+
+    <rect x="218" y="587" width="238" height="105" rx="8" fill="#eef5fc" stroke="#7c9eb9" stroke-width="1.3"/>
+    <path d="M424 587h32v15h-32zM424 587v15" fill="#e4eff8" stroke="#7c9eb9" stroke-width="1.2"/>
+    <use href="#componentGlyph" x="228" y="599"/>
+    <text x="251" y="612" class="component-title">MonthlyBudgetService</text>
+    <text x="231" y="633" class="component-copy">Saves YYYY-MM budgets</text>
+    <text x="231" y="650" class="component-copy">Queries month expense range</text>
+    <text x="231" y="670" class="component-copy">Budget and spend aggregation</text>
+
+    <rect x="478" y="587" width="238" height="105" rx="8" fill="#fff7e5" stroke="#c5a35b" stroke-width="1.3"/>
+    <path d="M684 587h32v15h-32zM684 587v15" fill="#fbf0d6" stroke="#c5a35b" stroke-width="1.2"/>
+    <use href="#componentGlyph" x="488" y="599"/>
+    <text x="511" y="612" class="component-title">DeviceNotificationService</text>
+    <text x="491" y="633" class="component-copy">Expiry schedule generation</text>
+    <text x="491" y="650" class="component-copy">Budget threshold evaluation</text>
+    <text x="491" y="670" class="component-copy">Stable IDs / in-app history</text>
+
+    <rect x="738" y="587" width="251" height="105" rx="8" fill="#fff7e5" stroke="#c5a35b" stroke-width="1.3"/>
+    <path d="M957 587h32v15h-32zM957 587v15" fill="#fbf0d6" stroke="#c5a35b" stroke-width="1.2"/>
+    <use href="#componentGlyph" x="748" y="599"/>
+    <text x="771" y="612" class="component-title">GroceryImageService</text>
+    <text x="751" y="633" class="component-copy">Image picker and validation</text>
+    <text x="751" y="650" class="component-copy">Platform-specific local storage</text>
+    <text x="751" y="670" class="component-copy">Image bytes never enter Firestore</text>
+
+    <rect x="478" y="717" width="238" height="91" rx="8" fill="#f5effa" stroke="#a48ab8" stroke-width="1.3"/>
+    <path d="M684 717h32v15h-32zM684 717v15" fill="#eee5f5" stroke="#a48ab8" stroke-width="1.2"/>
+    <use href="#componentGlyph" x="488" y="729"/>
+    <text x="511" y="742" class="component-title">BackupService</text>
+    <text x="491" y="763" class="component-copy">Versioned JSON export / restore</text>
+    <text x="491" y="782" class="component-copy">UID check · merge by document ID</text>
+  </g>
+
+  <rect x="1052" y="112" width="520" height="766" rx="18" fill="#fbfcfe" stroke="#96b4ca" stroke-width="2"/>
+  <rect x="1052" y="112" width="520" height="46" rx="18" fill="#e7f1f8"/>
+  <path d="M1052 140v18h520v-18" fill="#e7f1f8"/>
+  <use href="#componentGlyph" x="1068" y="123"/>
+  <text x="1094" y="137" class="boundary-title">«cloud» Firebase project</text>
+  <text x="1550" y="136" text-anchor="end" class="boundary-subtitle">grocery-list-and-expiry-track</text>
+
+  <rect x="1077" y="184" width="468" height="149" rx="10" fill="#fff" stroke="#6f98b5" stroke-width="1.5"/>
+  <path d="M1395 184h150v24h-150z" fill="#e8f3fb" stroke="#6f98b5" stroke-width="1.2"/>
+  <use href="#componentGlyph" x="1405" y="188"/>
+  <text x="1429" y="201" class="small" font-weight="700" fill="#285b43">«component»</text>
+  <use href="#componentGlyph" x="1093" y="200"/>
+  <text x="1118" y="215" class="component-title">Firebase Authentication</text>
+  <text x="1095" y="243" class="component-copy">Provides email/password and Google identity providers.</text>
+  <text x="1095" y="262" class="component-copy">Issues authenticated user identity and UID.</text>
+  <text x="1095" y="281" class="component-copy">Web popup; native Google OAuth needs platform credentials.</text>
+  <circle cx="1077" cy="253" r="7" fill="#fff" stroke="#428451" stroke-width="2"/>
+  <text x="1090" y="309" class="port-label">Auth API</text>
+
+  <rect x="1077" y="359" width="468" height="285" rx="10" fill="#fff" stroke="#6f98b5" stroke-width="1.5"/>
+  <path d="M1395 359h150v24h-150z" fill="#e8f3fb" stroke="#6f98b5" stroke-width="1.2"/>
+  <use href="#componentGlyph" x="1405" y="363"/>
+  <text x="1429" y="376" class="small" font-weight="700" fill="#285b43">«component»</text>
+  <use href="#componentGlyph" x="1093" y="375"/>
+  <text x="1118" y="390" class="component-title">Cloud Firestore</text>
+  <text x="1095" y="414" class="component-copy">Authenticated user's private document hierarchy:</text>
+
+  <rect x="1095" y="428" width="432" height="42" rx="6" fill="#f3f8fc" stroke="#d4e2ec"/>
+  <text x="1107" y="446" class="component-title">users/{uid}</text><text x="1107" y="462" class="component-copy">Profile · preferences · monthlyBudgets map</text>
+  <rect x="1095" y="479" width="432" height="42" rx="6" fill="#f3f8fc" stroke="#d4e2ec"/>
+  <text x="1107" y="497" class="component-title">groceries/{groceryId}</text><text x="1107" y="513" class="component-copy">Inventory item metadata · imagePath only</text>
+  <rect x="1095" y="530" width="432" height="42" rx="6" fill="#f3f8fc" stroke="#d4e2ec"/>
+  <text x="1107" y="548" class="component-title">expenses/{expenseId}</text><text x="1107" y="564" class="component-copy">Grocery purchase ledger + manual expenses</text>
+  <rect x="1095" y="581" width="432" height="42" rx="6" fill="#f3f8fc" stroke="#d4e2ec"/>
+  <text x="1107" y="599" class="component-title">notifications/{notificationId}</text><text x="1107" y="615" class="component-copy">In-app history · read/schedule state</text>
+  <circle cx="1077" cy="493" r="7" fill="#fff" stroke="#428451" stroke-width="2"/>
+  <text x="1090" y="637" class="port-label">Firestore SDK API · secured by firestore.rules</text>
+
+  <rect x="1077" y="672" width="468" height="176" rx="10" fill="#fffaf0" stroke="#c5a35b" stroke-width="1.5"/>
+  <path d="M1395 672h150v24h-150z" fill="#fbf0d6" stroke="#c5a35b" stroke-width="1.2"/>
+  <use href="#componentGlyph" x="1405" y="676"/>
+  <text x="1429" y="689" class="small" font-weight="700" fill="#285b43">«device»</text>
+  <use href="#componentGlyph" x="1093" y="688"/>
+  <text x="1118" y="703" class="component-title">Platform capabilities · not Firebase services</text>
+  <rect x="1095" y="719" width="209" height="54" rx="7" fill="#fff" stroke="#e4d5aa"/>
+  <text x="1107" y="739" class="component-title">Local notification plugin</text>
+  <text x="1107" y="757" class="component-copy">Timezone · OS permission · scheduler</text>
+  <rect x="1315" y="719" width="212" height="54" rx="7" fill="#fff" stroke="#e4d5aa"/>
+  <text x="1327" y="739" class="component-title">Local photo store</text>
+  <text x="1327" y="757" class="component-copy">App-private device / web storage</text>
+  <rect x="1095" y="787" width="432" height="42" rx="7" fill="#fff" stroke="#e4d5aa"/>
+  <text x="1107" y="805" class="component-title">User-selected JSON backup file</text>
+  <text x="1107" y="821" class="component-copy">BackupService exports / restores Firestore data; local photo bytes excluded.</text>
+
+  <g fill="none" stroke-width="1.6">
+    <path d="M84 500 H139 V255 H176" stroke="#526356" stroke-dasharray="5 4" marker-end="url(#dependency)"/>
+    <path d="M418 255 H435" stroke="#526356" stroke-dasharray="5 4" marker-end="url(#dependency)"/>
+    <path d="M607 255 H624" stroke="#526356" stroke-dasharray="5 4" marker-end="url(#dependency)"/>
+    <path d="M798 255 H815" stroke="#526356" stroke-dasharray="5 4" marker-end="url(#dependency)"/>
+
+    <path d="M521 292 V304 H205 V445 H337 V449" stroke="#526356" stroke-dasharray="5 4" marker-end="url(#dependency)"/>
+    <path d="M989 345 H1021 V445 H597 V449" stroke="#526356" stroke-dasharray="5 4" marker-end="url(#dependency)"/>
+    <path d="M863 445 V449" stroke="#526356" stroke-dasharray="5 4" marker-end="url(#dependency)"/>
+    <path d="M1021 445 V572 H337 V579" stroke="#526356" stroke-dasharray="5 4" marker-end="url(#dependency)"/>
+    <path d="M1021 572 H597 V579" stroke="#526356" stroke-dasharray="5 4" marker-end="url(#dependency)"/>
+    <path d="M1021 572 V704 H597 V709" stroke="#526356" stroke-dasharray="5 4" marker-end="url(#dependency)"/>
+
+    <path d="M337 457 V445 H1040 V253 H1070" stroke="#428451" stroke-width="2.3" marker-end="url(#dataflow)"/>
+    <path d="M597 457 V445 H1040 V493 H1070" stroke="#428451" stroke-width="2.3" marker-end="url(#dataflow)"/>
+    <path d="M863 457 V445 H1040 V493 H1070" stroke="#428451" stroke-width="2.3" marker-end="url(#dataflow)"/>
+    <path d="M337 587 V572 H1040 V493 H1070" stroke="#428451" stroke-width="2.3" marker-end="url(#dataflow)"/>
+    <path d="M597 587 V572 H1040 V493 H1070" stroke="#428451" stroke-width="2.3" marker-end="url(#dataflow)"/>
+    <path d="M597 692 V704 H1040 V746 H1088" stroke="#b7862f" stroke-width="2.2" stroke-dasharray="7 4" marker-end="url(#localflow)"/>
+    <path d="M863 692 H1040 V860 H1308 V746 H1310" stroke="#b7862f" stroke-width="2.2" stroke-dasharray="7 4" marker-end="url(#localflow)"/>
+    <path d="M597 808 V860 H1066 V808 H1088" stroke="#788078" stroke-width="1.8" stroke-dasharray="3 5" marker-end="url(#dependency)"/>
+  </g>
+
+  <g>
+    <use href="#actorGlyph" x="62" y="380"/>
+    <text x="82" y="470" text-anchor="middle" class="component-title">Shopper</text>
+    <text x="82" y="536" text-anchor="middle" class="component-copy">uses app</text>
+  </g>
+
+  <g>
+    <rect x="176" y="900" width="1396" height="112" rx="14" fill="#f7faf7" stroke="#dce8d7"/>
+    <text x="197" y="927" class="section-title">PRIMARY COMPONENT INTERACTIONS</text>
+    <text x="197" y="953" class="component-copy"><tspan font-weight="700">1 · Authentication:</tspan> Auth UI → AuthGate → AuthService → Firebase Auth → profile lookup.</text>
+    <text x="197" y="976" class="component-copy"><tspan font-weight="700">2 · Grocery save:</tspan> Grocery form → GroceryService → atomic inventory + purchase-ledger batch.</text>
+    <text x="197" y="999" class="component-copy"><tspan font-weight="700">3 · Reports:</tspan> Reports/Dashboard → budget service + purchaseDate expense query → totals and breakdowns.</text>
+    <text x="884" y="953" class="component-copy"><tspan font-weight="700">4 · Reminders:</tspan> Notification service → Firestore history + native OS scheduler; permission/timezone apply.</text>
+    <text x="884" y="976" class="component-copy"><tspan font-weight="700">5 · Photo / backup:</tspan> Photos stay local; JSON export contains Firestore data, but not photo bytes.</text>
+    <text x="884" y="999" class="component-copy"><tspan font-weight="700">Security:</tspan> UID checks + Firestore rules isolate users. Web does not schedule local notifications.</text>
+  </g>
+</svg>
