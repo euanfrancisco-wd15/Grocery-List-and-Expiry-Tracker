@@ -1,5 +1,7 @@
 # GroPanda System Design
 
+![GroPanda logo](../assets/images/gropanda_logo.png)
+
 This document describes the current Flutter and Firebase implementation. The
 database is Cloud Firestore, a document database; the schema below therefore
 describes collections and documents rather than relational tables.
@@ -119,7 +121,8 @@ not stored as a separate grocery field.
 
 Grocery-linked expenses use the grocery document ID as `expenseId`. They are
 written atomically with the grocery record, so editing the item updates its
-ledger entry. Removing the inventory item does not remove the expense.
+ledger entry. Removing the inventory item deletes its linked expense in the
+same batch; unrelated manual expenses are retained.
 
 | Field | Type | Description |
 | --- | --- | --- |

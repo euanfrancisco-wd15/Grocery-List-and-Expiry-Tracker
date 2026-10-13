@@ -4,7 +4,9 @@
 from __future__ import annotations
 
 import base64
+import argparse
 import html
+import mimetypes
 import re
 import shutil
 import subprocess
@@ -13,6 +15,7 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parent
+REPO_ROOT = ROOT.parent
 SOURCE = ROOT / "SYSTEM_DESIGN.md"
 OUTPUT = ROOT / "SYSTEM_DESIGN.pdf"
 CHROME_CANDIDATES = (
@@ -43,8 +46,29 @@ def table_row(line: str) -> list[str]:
 
 
 def svg_data_uri(path: Path) -> str:
-    encoded = base64.b64encode(path.read_bytes()).decode("ascii")
+    source = path.read_text(encoding="utf-8")
+    reference_pattern = re.compile(r'((?:href|xlink:href)=["\'])([^"\']+)(["\'])')
+
+    def embed_reference(match: re.Match[str]) -> str:
+        reference = match.group(2)
+        if reference.startswith(("data:", "http://", "https://", "#")):
+            return match.group(0)
+        image_path = (path.parent / reference).resolve()
+        if not image_path.is_relative_to(REPO_ROOT) or not image_path.is_file():
+            return match.group(0)
+        return (
+            f"{match.group(1)}{image_data_uri(image_path)}{match.group(3)}"
+        )
+
+    source = reference_pattern.sub(embed_reference, source)
+    encoded = base64.b64encode(source.encode("utf-8")).decode("ascii")
     return f"data:image/svg+xml;base64,{encoded}"
+
+
+def image_data_uri(path: Path) -> str:
+    mime_type = mimetypes.guess_type(path.name)[0] or "application/octet-stream"
+    encoded = base64.b64encode(path.read_bytes()).decode("ascii")
+    return f"data:{mime_type};base64,{encoded}"
 
 
 def render_markdown(source: str) -> str:
@@ -115,14 +139,22 @@ def render_markdown(source: str) -> str:
             flush_paragraph()
             alt, relative_path = image.groups()
             image_path = (ROOT / relative_path).resolve()
-            if not image_path.is_relative_to(ROOT) or not image_path.is_file():
+            if not image_path.is_relative_to(REPO_ROOT) or not image_path.is_file():
                 raise FileNotFoundError(f"Wireframe not found: {relative_path}")
-            figure_class = (
-                "architecture" if image_path.name == "architecture.svg" else "wireframe"
+            if image_path.name == "architecture.svg":
+                figure_class = "architecture"
+            elif image_path.name == "gropanda_logo.png":
+                figure_class = "logo"
+            else:
+                figure_class = "wireframe"
+            image_uri = (
+                svg_data_uri(image_path)
+                if image_path.suffix.lower() == ".svg"
+                else image_data_uri(image_path)
             )
             output.append(
                 f'<figure class="{figure_class}">'
-                f'<img src="{svg_data_uri(image_path)}" alt="{html.escape(alt)}">'
+                f'<img src="{image_uri}" alt="{html.escape(alt)}">'
                 f"<figcaption>{html.escape(alt)}</figcaption></figure>"
             )
             index += 1
@@ -163,18 +195,25 @@ def render_markdown(source: str) -> str:
 
 
 def main() -> None:
+    parser = argparse.ArgumentParser()
+    parser.add_argument("source", nargs="?", type=Path, default=SOURCE)
+    parser.add_argument("output", nargs="?", type=Path, default=OUTPUT)
+    args = parser.parse_args()
+    source_path = args.source.resolve()
+    output_path = args.output.resolve()
     chrome = next((candidate for candidate in CHROME_CANDIDATES if candidate and Path(candidate).is_file()), None)
     if chrome is None:
         raise SystemExit(
             "Google Chrome or Chromium is required. Install a Chromium-based "
             "browser, then run this script again."
         )
-    if not SOURCE.is_file():
-        raise SystemExit(f"Design document not found: {SOURCE}")
+    if not source_path.is_file():
+        raise SystemExit(f"Design document not found: {source_path}")
 
-    body = render_markdown(SOURCE.read_text(encoding="utf-8"))
+    title = source_path.stem.replace("_", " ").title()
+    body = render_markdown(source_path.read_text(encoding="utf-8"))
     document = f"""<!doctype html>
-<html><head><meta charset="utf-8"><title>GroPanda System Design</title>
+<html><head><meta charset="utf-8"><title>{html.escape(title)}</title>
 <style>
 @page {{ size: A4; margin: 18mm 16mm 20mm;
   @bottom-right {{ content: "GroPanda · " counter(page); color: #788078;
@@ -205,6 +244,9 @@ ul, ol {{ padding-left: 22px; }}
 li {{ margin: 3px 0; }}
 figure {{ text-align: center; margin: 14px 0 20px; page-break-inside: avoid; }}
 figure.wireframe img {{ height: 208mm; max-width: 100%; object-fit: contain; }}
+figure.logo {{ margin: 0 auto 8px; }}
+figure.logo img {{ display: block; width: auto; height: 28mm; margin: auto; }}
+figure.logo figcaption {{ display: none; }}
 figure.architecture {{ page: architecture; page-break-before: always;
   page-break-after: always; }}
 figure.architecture img {{ display: block; width: 100%; height: auto; }}
@@ -213,7 +255,7 @@ hr {{ border: 0; border-top: 1px solid #dce8d7; }}
 </style></head><body>{body}</body></html>"""
 
     with tempfile.TemporaryDirectory(prefix="gropanda-pdf-") as temp_dir:
-        html_path = Path(temp_dir) / "system-design.html"
+        html_path = Path(temp_dir) / f"{source_path.stem}.html"
         html_path.write_text(document, encoding="utf-8")
         result = subprocess.run(
             [
@@ -224,19 +266,19 @@ hr {{ border: 0; border-top: 1px solid #dce8d7; }}
                 "--disable-dev-shm-usage",
                 "--no-pdf-header-footer",
                 f"--user-data-dir={temp_dir}/chrome-profile",
-                f"--print-to-pdf={OUTPUT}",
+                f"--print-to-pdf={output_path}",
                 html_path.as_uri(),
             ],
             capture_output=True,
             text=True,
             check=False,
         )
-        if result.returncode != 0 or not OUTPUT.is_file():
+        if result.returncode != 0 or not output_path.is_file():
             raise SystemExit(
                 "Chrome could not export the PDF.\n"
                 f"{result.stderr.strip() or result.stdout.strip()}"
             )
-    print(f"Created {OUTPUT} ({OUTPUT.stat().st_size:,} bytes)")
+    print(f"Created {output_path} ({output_path.stat().st_size:,} bytes)")
 
 
 if __name__ == "__main__":

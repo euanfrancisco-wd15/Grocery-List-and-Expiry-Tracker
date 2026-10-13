@@ -27,3 +27,4 @@ prerequisites, testing, and troubleshooting.
 - [System architecture, Firestore schema, and wireframes](docs/SYSTEM_DESIGN.md)
 - [Detailed system architecture visualization](docs/architecture.svg)
 - [System design PDF](docs/SYSTEM_DESIGN.pdf)
+- [UI wireframes only](docs/UI_WIREFRAMES.md) · [UI wireframes PDF](docs/UI_WIREFRAMES.pdf)
